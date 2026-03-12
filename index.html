@@ -1,0 +1,406 @@
+<!DOCTYPE html>
+<html lang="sq">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gallery App</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+        }
+
+        h1 {
+            text-align: center;
+            color: #333;
+            margin-bottom: 30px;
+            font-size: 2.5em;
+        }
+
+        .upload-section {
+            background: #f8f9fa;
+            border-radius: 15px;
+            padding: 30px;
+            margin-bottom: 40px;
+            text-align: center;
+            border: 2px dashed #667eea;
+        }
+
+        .upload-area {
+            border: 2px dashed #667eea;
+            border-radius: 10px;
+            padding: 40px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .upload-area:hover {
+            background: #e8f0fe;
+            border-color: #764ba2;
+        }
+
+        .upload-area i {
+            font-size: 48px;
+            color: #667eea;
+            margin-bottom: 15px;
+        }
+
+        .upload-area p {
+            color: #666;
+            font-size: 18px;
+        }
+
+        .upload-area .small {
+            font-size: 14px;
+            color: #999;
+            margin-top: 10px;
+        }
+
+        #imageInput {
+            display: none;
+        }
+
+        .btn-upload {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 12px 30px;
+            border-radius: 25px;
+            font-size: 16px;
+            cursor: pointer;
+            margin-top: 20px;
+            transition: transform 0.2s;
+        }
+
+        .btn-upload:hover {
+            transform: scale(1.05);
+        }
+
+        .gallery-title {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .gallery-title h2 {
+            color: #333;
+        }
+
+        .btn-clear {
+            background: #ff4757;
+            color: white;
+            border: none;
+            padding: 8px 20px;
+            border-radius: 20px;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+
+        .btn-clear:hover {
+            background: #ff6b81;
+        }
+
+        .gallery {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 20px;
+        }
+
+        .gallery-item {
+            background: white;
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            transition: transform 0.3s, box-shadow 0.3s;
+            cursor: pointer;
+        }
+
+        .gallery-item:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+        }
+
+        .gallery-item img {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+        }
+
+        .image-info {
+            padding: 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .image-name {
+            font-size: 14px;
+            color: #666;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+            max-width: 150px;
+        }
+
+        .delete-btn {
+            background: #ff4757;
+            color: white;
+            border: none;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: background 0.3s;
+        }
+
+        .delete-btn:hover {
+            background: #ff6b81;
+        }
+
+        /* Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.8);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .modal.active {
+            display: flex;
+        }
+
+        .modal-content {
+            max-width: 90%;
+            max-height: 90%;
+        }
+
+        .modal-content img {
+            width: 100%;
+            height: auto;
+            border-radius: 10px;
+        }
+
+        .modal-close {
+            position: absolute;
+            top: 20px;
+            right: 30px;
+            color: white;
+            font-size: 40px;
+            cursor: pointer;
+            transition: color 0.3s;
+        }
+
+        .modal-close:hover {
+            color: #ff4757;
+        }
+
+        .empty-gallery {
+            text-align: center;
+            padding: 50px;
+            color: #999;
+            font-size: 18px;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 15px;
+            }
+            
+            .gallery {
+                grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>📸 Gallery App</h1>
+        
+        <div class="upload-section">
+            <div class="upload-area" id="uploadArea">
+                <i>📤</i>
+                <p>Kliko ose zvarrit imazhet këtu</p>
+                <p class="small">Supported formats: JPG, PNG, GIF (max 5MB)</p>
+            </div>
+            <input type="file" id="imageInput" accept="image/*" multiple>
+            <button class="btn-upload" id="uploadBtn">Zgjidh Imazhe</button>
+        </div>
+
+        <div class="gallery-title">
+            <h2>Gallery</h2>
+            <button class="btn-clear" id="clearGallery">Pastro Gallery</button>
+        </div>
+
+        <div class="gallery" id="gallery">
+            <div class="empty-gallery">
+                Asnjë imazh në gallery. Ngarko disa imazhe!
+            </div>
+        </div>
+    </div>
+
+    <div class="modal" id="modal">
+        <span class="modal-close" id="modalClose">&times;</span>
+        <div class="modal-content">
+            <img id="modalImage" src="" alt="Imazh i zmadhuar">
+        </div>
+    </div>
+
+    <script>
+        class GalleryApp {
+            constructor() {
+                this.images = JSON.parse(localStorage.getItem('galleryImages')) || [];
+                this.modal = document.getElementById('modal');
+                this.modalImage = document.getElementById('modalImage');
+                this.gallery = document.getElementById('gallery');
+                this.imageInput = document.getElementById('imageInput');
+                this.uploadArea = document.getElementById('uploadArea');
+                this.uploadBtn = document.getElementById('uploadBtn');
+                this.clearBtn = document.getElementById('clearGallery');
+                this.modalClose = document.getElementById('modalClose');
+                
+                this.init();
+            }
+
+            init() {
+                this.renderGallery();
+                this.bindEvents();
+            }
+
+            bindEvents() {
+                this.uploadArea.addEventListener('click', () => this.imageInput.click());
+                this.uploadBtn.addEventListener('click', () => this.imageInput.click());
+                this.imageInput.addEventListener('change', (e) => this.handleImageUpload(e));
+                this.clearBtn.addEventListener('click', () => this.clearGallery());
+                this.modalClose.addEventListener('click', () => this.closeModal());
+                
+                this.uploadArea.addEventListener('dragover', (e) => {
+                    e.preventDefault();
+                    this.uploadArea.style.background = '#e8f0fe';
+                });
+
+                this.uploadArea.addEventListener('dragleave', () => {
+                    this.uploadArea.style.background = '';
+                });
+
+                this.uploadArea.addEventListener('drop', (e) => {
+                    e.preventDefault();
+                    this.uploadArea.style.background = '';
+                    const files = e.dataTransfer.files;
+                    this.processFiles(files);
+                });
+
+                window.addEventListener('click', (e) => {
+                    if (e.target === this.modal) {
+                        this.closeModal();
+                    }
+                });
+            }
+
+            handleImageUpload(e) {
+                const files = e.target.files;
+                this.processFiles(files);
+            }
+
+            processFiles(files) {
+                Array.from(files).forEach(file => {
+                    if (file.type.startsWith('image/')) {
+                        if (file.size > 5 * 1024 * 1024) {
+                            alert(`Imazhi ${file.name} është më i madh se 5MB`);
+                            return;
+                        }
+
+                        const reader = new FileReader();
+                        reader.onload = (e) => {
+                            this.images.push({
+                                id: Date.now() + Math.random(),
+                                name: file.name,
+                                data: e.target.result
+                            });
+                            this.saveToLocalStorage();
+                            this.renderGallery();
+                        };
+                        reader.readAsDataURL(file);
+                    } else {
+                        alert(`${file.name} nuk është një imazh i vlefshëm`);
+                    }
+                });
+                
+                this.imageInput.value = '';
+            }
+
+            deleteImage(id) {
+                this.images = this.images.filter(img => img.id !== id);
+                this.saveToLocalStorage();
+                this.renderGallery();
+            }
+
+            clearGallery() {
+                if (confirm('Jeni i sigurt që doni të fshini të gjitha imazhet?')) {
+                    this.images = [];
+                    this.saveToLocalStorage();
+                    this.renderGallery();
+                }
+            }
+
+            openModal(imageSrc) {
+                this.modalImage.src = imageSrc;
+                this.modal.classList.add('active');
+            }
+
+            closeModal() {
+                this.modal.classList.remove('active');
+            }
+
+            saveToLocalStorage() {
+                localStorage.setItem('galleryImages', JSON.stringify(this.images));
+            }
+
+            renderGallery() {
+                if (this.images.length === 0) {
+                    this.gallery.innerHTML = '<div class="empty-gallery">Asnjë imazh në gallery. Ngarko disa imazhe!</div>';
+                    return;
+                }
+
+                this.gallery.innerHTML = this.images.map(image => `
+                    <div class="gallery-item">
+                        <img src="${image.data}" alt="${image.name}" onclick="app.openModal('${image.data}')">
+                        <div class="image-info">
+                            <span class="image-name" title="${image.name}">${image.name}</span>
+                            <button class="delete-btn" onclick="app.deleteImage(${image.id})">✕</button>
+                        </div>
+                    </div>
+                `).join('');
+            }
+        }
+
+        const app = new GalleryApp();
+    </script>
+</body>
+</html>
