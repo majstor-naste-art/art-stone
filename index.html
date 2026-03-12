@@ -3,8 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ART-STONE</title>
+    <title>GalleryApp - Shpërndaji Momentet Tua</title>
     <style>
+        /* I njëjti CSS si më parë */
         * {
             margin: 0;
             padding: 0;
@@ -933,7 +934,7 @@
             <div class="logo" onclick="showHome()">
                 <div class="logo-icon">📸</div>
                 <div class="logo-text">
-                    <h1>ART-STONE</h1>
+                    <h1>GalleryApp</h1>
                     <p>Shpërndaji momentet tua</p>
                 </div>
             </div>
@@ -1088,13 +1089,16 @@
     <script>
         class GalleryApp {
             constructor() {
-                this.images = JSON.parse(localStorage.getItem('galleryImages')) || [];
+                // Load images from localStorage
+                const savedImages = localStorage.getItem('galleryImages');
+                this.images = savedImages ? JSON.parse(savedImages) : [];
                 this.currentSlide = 0;
                 this.currentLightboxIndex = 0;
                 this.currentLightboxImages = [];
                 this.slideInterval = null;
-                this.isLoggedIn = false;
+                this.isLoggedIn = localStorage.getItem('adminLoggedIn') === 'true';
                 
+                console.log('Images loaded from storage:', this.images.length);
                 this.init();
             }
 
@@ -1105,7 +1109,7 @@
                 this.initSlider();
                 this.bindEvents();
                 this.startSlider();
-                this.checkLoginStatus();
+                this.updateUIForLogin();
             }
 
             bindEvents() {
@@ -1115,11 +1119,25 @@
                 const adminUploadBtn = document.getElementById('adminUploadBtn');
 
                 if (adminUploadArea) {
-                    adminUploadArea.addEventListener('click', () => adminImageInput.click());
+                    adminUploadArea.addEventListener('click', () => {
+                        if (this.isLoggedIn) {
+                            adminImageInput.click();
+                        } else {
+                            alert('Ju duhet të kyçeni për të ngarkuar imazhe!');
+                            showLoginModal();
+                        }
+                    });
                 }
                 
                 if (adminUploadBtn) {
-                    adminUploadBtn.addEventListener('click', () => adminImageInput.click());
+                    adminUploadBtn.addEventListener('click', () => {
+                        if (this.isLoggedIn) {
+                            adminImageInput.click();
+                        } else {
+                            alert('Ju duhet të kyçeni për të ngarkuar imazhe!');
+                            showLoginModal();
+                        }
+                    });
                 }
                 
                 if (adminImageInput) {
@@ -1139,7 +1157,12 @@
                     adminUploadArea.addEventListener('drop', (e) => {
                         e.preventDefault();
                         adminUploadArea.style.background = '';
-                        this.processFiles(e.dataTransfer.files);
+                        if (this.isLoggedIn) {
+                            this.processFiles(e.dataTransfer.files);
+                        } else {
+                            alert('Ju duhet të kyçeni për të ngarkuar imazhe!');
+                            showLoginModal();
+                        }
                     });
                 }
 
@@ -1158,12 +1181,11 @@
                         login();
                     }
                 });
-            }
 
-            checkLoginStatus() {
-                const loggedIn = localStorage.getItem('adminLoggedIn') === 'true';
-                this.isLoggedIn = loggedIn;
-                this.updateUIForLogin();
+                // Save before page unload
+                window.addEventListener('beforeunload', () => {
+                    this.saveToLocalStorage();
+                });
             }
 
             updateUIForLogin() {
@@ -1183,12 +1205,15 @@
             handleImageUpload(e) {
                 if (!this.isLoggedIn) {
                     alert('Ju duhet të kyçeni për të ngarkuar imazhe!');
+                    showLoginModal();
                     return;
                 }
                 this.processFiles(e.target.files);
             }
 
             processFiles(files) {
+                console.log('Processing files:', files.length);
+                
                 Array.from(files).forEach(file => {
                     if (file.type.startsWith('image/')) {
                         if (file.size > 10 * 1024 * 1024) {
@@ -1198,15 +1223,22 @@
 
                         const reader = new FileReader();
                         reader.onload = (e) => {
-                            this.images.push({
+                            const newImage = {
                                 id: Date.now() + Math.random(),
                                 name: file.name,
                                 data: e.target.result,
                                 size: file.size,
                                 date: new Date().toISOString(),
                                 featured: this.images.length < 3
-                            });
+                            };
+                            
+                            this.images.push(newImage);
+                            console.log('Image added:', newImage.name);
+                            
+                            // Save immediately after adding
                             this.saveToLocalStorage();
+                            
+                            // Update all views
                             this.renderFeatured();
                             this.renderFullGallery();
                             this.renderAdminGallery();
@@ -1218,12 +1250,14 @@
                     }
                 });
                 
+                // Clear input
                 document.getElementById('adminImageInput').value = '';
             }
 
             deleteImage(id) {
                 if (!this.isLoggedIn) {
                     alert('Ju duhet të kyçeni për të fshirë imazhe!');
+                    showLoginModal();
                     return;
                 }
                 
@@ -1238,12 +1272,15 @@
                     if (this.images.length === 0) {
                         this.stopSlider();
                     }
+                    
+                    console.log('Image deleted. Total images:', this.images.length);
                 }
             }
 
             toggleFeatured(id) {
                 if (!this.isLoggedIn) {
                     alert('Ju duhet të kyçeni për të ndryshuar featured!');
+                    showLoginModal();
                     return;
                 }
                 
@@ -1253,13 +1290,20 @@
                     }
                     return img;
                 });
+                
                 this.saveToLocalStorage();
                 this.renderFeatured();
                 this.renderFullGallery();
             }
 
             saveToLocalStorage() {
-                localStorage.setItem('galleryImages', JSON.stringify(this.images));
+                try {
+                    localStorage.setItem('galleryImages', JSON.stringify(this.images));
+                    console.log('Saved to localStorage. Total images:', this.images.length);
+                } catch (e) {
+                    console.error('Error saving to localStorage:', e);
+                    alert('Ka një problem me ruajtjen e imazheve. Kontrollo hapësirën.');
+                }
             }
 
             // Slider functions
@@ -1300,7 +1344,9 @@
 
             startSlider() {
                 if (this.slideInterval) clearInterval(this.slideInterval);
-                this.slideInterval = setInterval(() => this.nextSlide(), 5000);
+                if (this.images.length > 0) {
+                    this.slideInterval = setInterval(() => this.nextSlide(), 5000);
+                }
             }
 
             stopSlider() {
@@ -1364,21 +1410,25 @@
             }
 
             // Lightbox functions
-            openLightbox(index, images) {
-                this.currentLightboxImages = images;
-                this.currentLightboxIndex = index;
-                
-                if (images.length === 0) return;
-                
-                const lightbox = document.getElementById('lightbox');
-                const lightboxImg = document.getElementById('lightboxImage');
-                const lightboxInfo = document.getElementById('lightboxInfo');
-                
-                lightboxImg.src = images[index].data;
-                lightboxInfo.textContent = `${images[index].name} - ${new Date(images[index].date).toLocaleDateString('sq-AL')}`;
-                lightbox.classList.add('active');
-                
-                this.stopSlider();
+            openLightbox(index, imagesJson) {
+                try {
+                    this.currentLightboxImages = typeof imagesJson === 'string' ? JSON.parse(imagesJson) : imagesJson;
+                    this.currentLightboxIndex = index;
+                    
+                    if (this.currentLightboxImages.length === 0) return;
+                    
+                    const lightbox = document.getElementById('lightbox');
+                    const lightboxImg = document.getElementById('lightboxImage');
+                    const lightboxInfo = document.getElementById('lightboxInfo');
+                    
+                    lightboxImg.src = this.currentLightboxImages[index].data;
+                    lightboxInfo.textContent = `${this.currentLightboxImages[index].name} - ${new Date(this.currentLightboxImages[index].date).toLocaleDateString('sq-AL')}`;
+                    lightbox.classList.add('active');
+                    
+                    this.stopSlider();
+                } catch (e) {
+                    console.error('Error opening lightbox:', e);
+                }
             }
 
             closeLightbox() {
@@ -1459,15 +1509,19 @@
                     return;
                 }
 
-                container.innerHTML = this.images.map((img, index) => `
-                    <div class="gallery-item" onclick='app.openLightbox(${index}, ${JSON.stringify(this.images).replace(/'/g, "\\'")})'>
-                        <img src="${img.data}" alt="${img.name}">
-                        <div class="gallery-item-info">
-                            <h4>${img.name.substring(0, 30)}${img.name.length > 30 ? '...' : ''}</h4>
-                            <p>📅 ${new Date(img.date).toLocaleDateString('sq-AL')} ${img.featured ? '⭐' : ''}</p>
+                container.innerHTML = this.images.map((img, index) => {
+                    // Create a safe JSON string for the images array
+                    const imagesJson = JSON.stringify(this.images).replace(/'/g, "\\'");
+                    return `
+                        <div class="gallery-item" onclick='app.openLightbox(${index}, ${imagesJson})'>
+                            <img src="${img.data}" alt="${img.name}">
+                            <div class="gallery-item-info">
+                                <h4>${img.name.substring(0, 30)}${img.name.length > 30 ? '...' : ''}</h4>
+                                <p>📅 ${new Date(img.date).toLocaleDateString('sq-AL')} ${img.featured ? '⭐' : ''}</p>
+                            </div>
                         </div>
-                    </div>
-                `).join('');
+                    `;
+                }).join('');
             }
 
             renderAdminGallery() {
@@ -1570,7 +1624,6 @@
             const username = document.getElementById('username').value;
             const password = document.getElementById('password').value;
             
-            // Demo credentials
             if (username === 'admin' && password === 'admin123') {
                 localStorage.setItem('adminLoggedIn', 'true');
                 app.isLoggedIn = true;
@@ -1581,6 +1634,9 @@
                 document.getElementById('loginError').classList.remove('show');
                 
                 app.stopSlider();
+                app.renderAdminGallery();
+                
+                console.log('Logged in successfully');
             } else {
                 document.getElementById('loginError').classList.add('show');
             }
@@ -1596,6 +1652,8 @@
             if (document.getElementById('heroSection').style.display !== 'none') {
                 app.startSlider();
             }
+            
+            console.log('Logged out');
         }
 
         function toggleAdmin() {
@@ -1605,6 +1663,7 @@
                 
                 if (adminPanel.classList.contains('active')) {
                     app.stopSlider();
+                    app.renderAdminGallery();
                 } else {
                     if (document.getElementById('heroSection').style.display !== 'none') {
                         app.startSlider();
@@ -1629,6 +1688,12 @@
                 menu.style.display = 'none';
             }
         });
+
+        // Manual save function (optional)
+        function saveImages() {
+            app.saveToLocalStorage();
+            alert('Imazhet u ruajtën manualisht!');
+        }
     </script>
 </body>
 </html>
