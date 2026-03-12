@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Gallery App</title>
+    <title>ART-STONE</title>
     <style>
         * {
             margin: 0;
@@ -13,64 +13,246 @@
 
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: #f0f2f5;
             min-height: 100vh;
-            padding: 20px;
         }
 
-        .container {
-            max-width: 1200px;
+        /* Header dhe Menu */
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 1rem 2rem;
+            box-shadow: 0 2px 20px rgba(0,0,0,0.1);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .nav-container {
+            max-width: 1400px;
             margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .logo-icon {
+            font-size: 2rem;
+            background: white;
+            width: 50px;
+            height: 50px;
+            border-radius: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transform: rotate(10deg);
+            transition: transform 0.3s;
+        }
+
+        .logo-icon:hover {
+            transform: rotate(0deg) scale(1.1);
+        }
+
+        .logo-text h1 {
+            color: white;
+            font-size: 1.8rem;
+            font-weight: 700;
+            letter-spacing: 1px;
+        }
+
+        .logo-text p {
+            color: rgba(255,255,255,0.8);
+            font-size: 0.8rem;
+        }
+
+        .menu {
+            display: flex;
+            gap: 2rem;
+            align-items: center;
+        }
+
+        .menu-item {
+            color: white;
+            text-decoration: none;
+            font-weight: 500;
+            padding: 0.5rem 1rem;
+            border-radius: 25px;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .menu-item:hover {
+            background: rgba(255,255,255,0.2);
+            transform: translateY(-2px);
+        }
+
+        .menu-item.active {
+            background: rgba(255,255,255,0.3);
+            font-weight: 600;
+        }
+
+        .menu-item i {
+            font-size: 1.2rem;
+        }
+
+        .user-profile {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-left: 20px;
+            padding-left: 20px;
+            border-left: 2px solid rgba(255,255,255,0.3);
+        }
+
+        .user-avatar {
+            width: 40px;
+            height: 40px;
+            background: rgba(255,255,255,0.2);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 1.5rem;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .user-avatar:hover {
+            background: rgba(255,255,255,0.3);
+            transform: scale(1.1);
+        }
+
+        .menu-toggle {
+            display: none;
+            font-size: 1.8rem;
+            color: white;
+            cursor: pointer;
+        }
+
+        /* Main Container */
+        .main-container {
+            max-width: 1400px;
+            margin: 2rem auto;
+            padding: 0 2rem;
+        }
+
+        /* Stats Cards */
+        .stats-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .stat-card {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 15px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            transition: transform 0.3s;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+        }
+
+        .stat-icon {
+            width: 60px;
+            height: 60px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 2rem;
+        }
+
+        .stat-info h3 {
+            color: #666;
+            font-size: 0.9rem;
+            font-weight: 400;
+        }
+
+        .stat-info p {
+            color: #333;
+            font-size: 2rem;
+            font-weight: 700;
+        }
+
+        /* Upload Section */
+        .upload-section {
             background: white;
             border-radius: 20px;
             padding: 30px;
-            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
-        }
-
-        h1 {
-            text-align: center;
-            color: #333;
-            margin-bottom: 30px;
-            font-size: 2.5em;
-        }
-
-        .upload-section {
-            background: #f8f9fa;
-            border-radius: 15px;
-            padding: 30px;
             margin-bottom: 40px;
-            text-align: center;
-            border: 2px dashed #667eea;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+        }
+
+        .section-header {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .section-header h2 {
+            color: #333;
+            font-size: 1.5rem;
+        }
+
+        .section-header i {
+            font-size: 2rem;
+            color: #667eea;
         }
 
         .upload-area {
-            border: 2px dashed #667eea;
-            border-radius: 10px;
-            padding: 40px;
+            border: 3px dashed #667eea;
+            border-radius: 15px;
+            padding: 50px;
+            text-align: center;
             cursor: pointer;
-            transition: all 0.3s ease;
+            transition: all 0.3s;
+            background: #f8f9fa;
         }
 
         .upload-area:hover {
             background: #e8f0fe;
             border-color: #764ba2;
+            transform: scale(1.02);
         }
 
         .upload-area i {
-            font-size: 48px;
+            font-size: 4rem;
             color: #667eea;
-            margin-bottom: 15px;
+            margin-bottom: 1rem;
+        }
+
+        .upload-area h3 {
+            color: #333;
+            margin-bottom: 0.5rem;
         }
 
         .upload-area p {
             color: #666;
-            font-size: 18px;
         }
 
         .upload-area .small {
-            font-size: 14px;
             color: #999;
-            margin-top: 10px;
+            font-size: 0.9rem;
+            margin-top: 1rem;
         }
 
         #imageInput {
@@ -81,47 +263,92 @@
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             color: white;
             border: none;
-            padding: 12px 30px;
-            border-radius: 25px;
-            font-size: 16px;
+            padding: 15px 40px;
+            border-radius: 30px;
+            font-size: 1.1rem;
+            font-weight: 600;
             cursor: pointer;
             margin-top: 20px;
-            transition: transform 0.2s;
+            transition: all 0.3s;
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
         }
 
         .btn-upload:hover {
-            transform: scale(1.05);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(102, 126, 234, 0.5);
         }
 
-        .gallery-title {
+        /* Gallery Section */
+        .gallery-wrapper {
+            background: white;
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+        }
+
+        .gallery-header {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 20px;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+            gap: 1rem;
         }
 
-        .gallery-title h2 {
+        .gallery-header h2 {
+            display: flex;
+            align-items: center;
+            gap: 10px;
             color: #333;
+        }
+
+        .gallery-controls {
+            display: flex;
+            gap: 1rem;
         }
 
         .btn-clear {
             background: #ff4757;
             color: white;
             border: none;
-            padding: 8px 20px;
-            border-radius: 20px;
+            padding: 10px 25px;
+            border-radius: 25px;
             cursor: pointer;
-            transition: background 0.3s;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            font-weight: 500;
         }
 
         .btn-clear:hover {
             background: #ff6b81;
+            transform: translateY(-2px);
+        }
+
+        .btn-refresh {
+            background: #667eea;
+            color: white;
+            border: none;
+            padding: 10px 25px;
+            border-radius: 25px;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            font-weight: 500;
+        }
+
+        .btn-refresh:hover {
+            background: #764ba2;
+            transform: translateY(-2px) rotate(180deg);
         }
 
         .gallery {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-            gap: 20px;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 25px;
         }
 
         .gallery-item {
@@ -129,53 +356,73 @@
             border-radius: 15px;
             overflow: hidden;
             box-shadow: 0 5px 15px rgba(0,0,0,0.1);
-            transition: transform 0.3s, box-shadow 0.3s;
+            transition: all 0.3s;
             cursor: pointer;
+            border: 1px solid rgba(0,0,0,0.05);
         }
 
         .gallery-item:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+            transform: translateY(-8px);
+            box-shadow: 0 12px 30px rgba(0,0,0,0.15);
         }
 
         .gallery-item img {
             width: 100%;
-            height: 200px;
+            height: 220px;
             object-fit: cover;
+            transition: transform 0.5s;
+        }
+
+        .gallery-item:hover img {
+            transform: scale(1.05);
         }
 
         .image-info {
             padding: 15px;
+            background: white;
             display: flex;
             justify-content: space-between;
             align-items: center;
+            border-top: 1px solid #eee;
+        }
+
+        .image-details {
+            flex: 1;
         }
 
         .image-name {
-            font-size: 14px;
-            color: #666;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 4px;
             overflow: hidden;
             text-overflow: ellipsis;
             white-space: nowrap;
             max-width: 150px;
         }
 
+        .image-date {
+            font-size: 0.8rem;
+            color: #999;
+        }
+
         .delete-btn {
             background: #ff4757;
             color: white;
             border: none;
-            width: 30px;
-            height: 30px;
+            width: 35px;
+            height: 35px;
             border-radius: 50%;
             cursor: pointer;
             display: flex;
             align-items: center;
             justify-content: center;
-            transition: background 0.3s;
+            transition: all 0.3s;
+            font-size: 1.2rem;
         }
 
         .delete-btn:hover {
             background: #ff6b81;
+            transform: rotate(90deg) scale(1.1);
         }
 
         /* Modal */
@@ -186,7 +433,7 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background: rgba(0,0,0,0.8);
+            background: rgba(0,0,0,0.9);
             z-index: 1000;
             justify-content: center;
             align-items: center;
@@ -199,72 +446,262 @@
         .modal-content {
             max-width: 90%;
             max-height: 90%;
+            position: relative;
+            animation: modalZoom 0.3s;
+        }
+
+        @keyframes modalZoom {
+            from {
+                transform: scale(0.8);
+                opacity: 0;
+            }
+            to {
+                transform: scale(1);
+                opacity: 1;
+            }
         }
 
         .modal-content img {
             width: 100%;
             height: auto;
             border-radius: 10px;
+            box-shadow: 0 0 30px rgba(0,0,0,0.5);
         }
 
         .modal-close {
             position: absolute;
-            top: 20px;
-            right: 30px;
+            top: -40px;
+            right: -40px;
             color: white;
-            font-size: 40px;
+            font-size: 3rem;
             cursor: pointer;
-            transition: color 0.3s;
+            transition: all 0.3s;
+            width: 50px;
+            height: 50px;
+            background: rgba(255,255,255,0.2);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
 
         .modal-close:hover {
-            color: #ff4757;
+            transform: rotate(90deg) scale(1.1);
+            background: rgba(255,71,87,0.5);
         }
 
         .empty-gallery {
             text-align: center;
-            padding: 50px;
+            padding: 60px;
             color: #999;
-            font-size: 18px;
+            font-size: 1.2rem;
+            grid-column: 1 / -1;
         }
 
+        .empty-gallery i {
+            font-size: 4rem;
+            margin-bottom: 1rem;
+            color: #667eea;
+        }
+
+        /* Footer */
+        .footer {
+            background: white;
+            padding: 2rem;
+            margin-top: 3rem;
+            text-align: center;
+            color: #666;
+            border-top: 1px solid #eee;
+        }
+
+        /* Responsive */
         @media (max-width: 768px) {
-            .container {
-                padding: 15px;
+            .menu {
+                display: none;
+            }
+
+            .menu-toggle {
+                display: block;
+            }
+
+            .user-profile {
+                display: none;
+            }
+
+            .nav-container {
+                flex-wrap: wrap;
+            }
+
+            .stats-container {
+                grid-template-columns: 1fr;
+            }
+
+            .gallery {
+                grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            }
+
+            .modal-close {
+                top: 10px;
+                right: 10px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .gallery {
+                grid-template-columns: 1fr;
             }
             
-            .gallery {
-                grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+            .upload-area {
+                padding: 30px 15px;
             }
+        }
+
+        /* Loading Animation */
+        .loading {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid rgba(255,255,255,.3);
+            border-radius: 50%;
+            border-top-color: white;
+            animation: spin 1s ease-in-out infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
         }
     </style>
 </head>
 <body>
-    <div class="container">
-        <h1>📸 Gallery App</h1>
-        
+    <!-- Header me Logo dhe Menu -->
+    <header class="header">
+        <nav class="nav-container">
+            <div class="logo">
+                <div class="logo-icon">
+                    📸
+                </div>
+                <div class="logo-text">
+                    <h1>ART-STONE</h1>
+                    <p>Shpërndaji momentet tua</p>
+                </div>
+            </div>
+
+            <div class="menu-toggle" onclick="toggleMenu()">
+                ☰
+            </div>
+
+            <div class="menu" id="mainMenu">
+                <a href="#" class="menu-item active" onclick="setActive(this)">
+                    <span>🏠</span> Ballina
+                </a>
+                <a href="#" class="menu-item" onclick="setActive(this)">
+                    <span>🖼️</span> Gallery
+                </a>
+                <a href="#" class="menu-item" onclick="setActive(this)">
+                    <span>⭐</span> Të preferuarat
+                </a>
+                <a href="#" class="menu-item" onclick="setActive(this)">
+                    <span>🏷️</span> Albumet
+                </a>
+                <a href="#" class="menu-item" onclick="setActive(this)">
+                    <span>ℹ️</span> Rreth nesh
+                </a>
+
+                <div class="user-profile">
+                    <div class="user-avatar" title="Profili im">
+                        👤
+                    </div>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <div class="main-container">
+        <!-- Stats Cards -->
+        <div class="stats-container" id="statsContainer">
+            <div class="stat-card">
+                <div class="stat-icon">📸</div>
+                <div class="stat-info">
+                    <h3>Total Imazhe</h3>
+                    <p id="totalImages">0</p>
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon">💾</div>
+                <div class="stat-info">
+                    <h3>Hapsira e përdorur</h3>
+                    <p id="totalSize">0 MB</p>
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon">📅</div>
+                <div class="stat-info">
+                    <h3>Ngarkuar sot</h3>
+                    <p id="todayCount">0</p>
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon">🏷️</div>
+                <div class="stat-info">
+                    <h3>Albumet</h3>
+                    <p>3</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Upload Section -->
         <div class="upload-section">
+            <div class="section-header">
+                <span>📤</span>
+                <h2>Ngarko imazhe të reja</h2>
+            </div>
             <div class="upload-area" id="uploadArea">
-                <i>📤</i>
-                <p>Kliko ose zvarrit imazhet këtu</p>
-                <p class="small">Supported formats: JPG, PNG, GIF (max 5MB)</p>
+                <span>📁</span>
+                <h3>Zvarrit imazhet këtu</h3>
+                <p>ose kliko për të zgjedhur</p>
+                <p class="small">Supported formats: JPG, PNG, GIF (max 10MB)</p>
             </div>
             <input type="file" id="imageInput" accept="image/*" multiple>
-            <button class="btn-upload" id="uploadBtn">Zgjidh Imazhe</button>
+            <div style="text-align: center;">
+                <button class="btn-upload" id="uploadBtn">
+                    <span>📤</span> Zgjidh Imazhe
+                </button>
+            </div>
         </div>
 
-        <div class="gallery-title">
-            <h2>Gallery</h2>
-            <button class="btn-clear" id="clearGallery">Pastro Gallery</button>
-        </div>
+        <!-- Gallery Section -->
+        <div class="gallery-wrapper">
+            <div class="gallery-header">
+                <h2>
+                    <span>🖼️</span> 
+                    Gallery
+                </h2>
+                <div class="gallery-controls">
+                    <button class="btn-refresh" id="refreshGallery" onclick="app.refreshGallery()">
+                        <span>🔄</span> Rifresko
+                    </button>
+                    <button class="btn-clear" id="clearGallery">
+                        <span>🗑️</span> Pastro të gjitha
+                    </button>
+                </div>
+            </div>
 
-        <div class="gallery" id="gallery">
-            <div class="empty-gallery">
-                Asnjë imazh në gallery. Ngarko disa imazhe!
+            <div class="gallery" id="gallery">
+                <div class="empty-gallery">
+                    <span>📸</span>
+                    <p>Asnjë imazh në gallery. Ngarko disa imazhe!</p>
+                </div>
             </div>
         </div>
     </div>
 
+    <!-- Footer -->
+    <footer class="footer">
+        <p>© 2024 GalleryApp - Të gjitha të drejtat e rezervuara</p>
+        <p style="margin-top: 0.5rem; font-size: 0.9rem;">Krijuar me ❤️ për të apasionuarit pas fotografisë</p>
+    </footer>
+
+    <!-- Modal -->
     <div class="modal" id="modal">
         <span class="modal-close" id="modalClose">&times;</span>
         <div class="modal-content">
@@ -284,12 +721,14 @@
                 this.uploadBtn = document.getElementById('uploadBtn');
                 this.clearBtn = document.getElementById('clearGallery');
                 this.modalClose = document.getElementById('modalClose');
+                this.today = new Date().toDateString();
                 
                 this.init();
             }
 
             init() {
                 this.renderGallery();
+                this.updateStats();
                 this.bindEvents();
             }
 
@@ -303,21 +742,30 @@
                 this.uploadArea.addEventListener('dragover', (e) => {
                     e.preventDefault();
                     this.uploadArea.style.background = '#e8f0fe';
+                    this.uploadArea.style.borderColor = '#764ba2';
                 });
 
                 this.uploadArea.addEventListener('dragleave', () => {
-                    this.uploadArea.style.background = '';
+                    this.uploadArea.style.background = '#f8f9fa';
+                    this.uploadArea.style.borderColor = '#667eea';
                 });
 
                 this.uploadArea.addEventListener('drop', (e) => {
                     e.preventDefault();
-                    this.uploadArea.style.background = '';
+                    this.uploadArea.style.background = '#f8f9fa';
+                    this.uploadArea.style.borderColor = '#667eea';
                     const files = e.dataTransfer.files;
                     this.processFiles(files);
                 });
 
                 window.addEventListener('click', (e) => {
                     if (e.target === this.modal) {
+                        this.closeModal();
+                    }
+                });
+
+                window.addEventListener('keydown', (e) => {
+                    if (e.key === 'Escape' && this.modal.classList.contains('active')) {
                         this.closeModal();
                     }
                 });
@@ -331,8 +779,8 @@
             processFiles(files) {
                 Array.from(files).forEach(file => {
                     if (file.type.startsWith('image/')) {
-                        if (file.size > 5 * 1024 * 1024) {
-                            alert(`Imazhi ${file.name} është më i madh se 5MB`);
+                        if (file.size > 10 * 1024 * 1024) {
+                            alert(`Imazhi ${file.name} është më i madh se 10MB`);
                             return;
                         }
 
@@ -341,10 +789,13 @@
                             this.images.push({
                                 id: Date.now() + Math.random(),
                                 name: file.name,
-                                data: e.target.result
+                                data: e.target.result,
+                                size: file.size,
+                                date: new Date().toISOString()
                             });
                             this.saveToLocalStorage();
                             this.renderGallery();
+                            this.updateStats();
                         };
                         reader.readAsDataURL(file);
                     } else {
@@ -356,17 +807,37 @@
             }
 
             deleteImage(id) {
-                this.images = this.images.filter(img => img.id !== id);
-                this.saveToLocalStorage();
-                this.renderGallery();
+                if (confirm('Jeni i sigurt që doni ta fshini këtë imazh?')) {
+                    this.images = this.images.filter(img => img.id !== id);
+                    this.saveToLocalStorage();
+                    this.renderGallery();
+                    this.updateStats();
+                }
             }
 
             clearGallery() {
+                if (this.images.length === 0) {
+                    alert('Nuk ka imazhe për të fshirë!');
+                    return;
+                }
+                
                 if (confirm('Jeni i sigurt që doni të fshini të gjitha imazhet?')) {
                     this.images = [];
                     this.saveToLocalStorage();
                     this.renderGallery();
+                    this.updateStats();
                 }
+            }
+
+            refreshGallery() {
+                const btn = document.getElementById('refreshGallery');
+                btn.innerHTML = '<span class="loading"></span>';
+                
+                setTimeout(() => {
+                    this.renderGallery();
+                    this.updateStats();
+                    btn.innerHTML = '<span>🔄</span> Rifresko';
+                }, 500);
             }
 
             openModal(imageSrc) {
@@ -382,9 +853,33 @@
                 localStorage.setItem('galleryImages', JSON.stringify(this.images));
             }
 
+            updateStats() {
+                document.getElementById('totalImages').textContent = this.images.length;
+                
+                const totalSize = this.images.reduce((acc, img) => acc + (img.size || 0), 0);
+                const sizeInMB = (totalSize / (1024 * 1024)).toFixed(2);
+                document.getElementById('totalSize').textContent = sizeInMB + ' MB';
+                
+                const todayCount = this.images.filter(img => {
+                    return img.date && new Date(img.date).toDateString() === this.today;
+                }).length;
+                document.getElementById('todayCount').textContent = todayCount;
+            }
+
+            formatDate(dateString) {
+                if (!dateString) return 'N/A';
+                const date = new Date(dateString);
+                return date.toLocaleDateString('sq-AL');
+            }
+
             renderGallery() {
                 if (this.images.length === 0) {
-                    this.gallery.innerHTML = '<div class="empty-gallery">Asnjë imazh në gallery. Ngarko disa imazhe!</div>';
+                    this.gallery.innerHTML = `
+                        <div class="empty-gallery">
+                            <span>📸</span>
+                            <p>Asnjë imazh në gallery. Ngarko disa imazhe!</p>
+                        </div>
+                    `;
                     return;
                 }
 
@@ -392,8 +887,11 @@
                     <div class="gallery-item">
                         <img src="${image.data}" alt="${image.name}" onclick="app.openModal('${image.data}')">
                         <div class="image-info">
-                            <span class="image-name" title="${image.name}">${image.name}</span>
-                            <button class="delete-btn" onclick="app.deleteImage(${image.id})">✕</button>
+                            <div class="image-details">
+                                <div class="image-name" title="${image.name}">${image.name}</div>
+                                <div class="image-date">${this.formatDate(image.date)}</div>
+                            </div>
+                            <button class="delete-btn" onclick="event.stopPropagation(); app.deleteImage(${image.id})">✕</button>
                         </div>
                     </div>
                 `).join('');
@@ -401,6 +899,45 @@
         }
 
         const app = new GalleryApp();
+
+        // Funksionet ndihmëse për menu
+        function setActive(element) {
+            document.querySelectorAll('.menu-item').forEach(item => {
+                item.classList.remove('active');
+            });
+            element.classList.add('active');
+        }
+
+        function toggleMenu() {
+            const menu = document.getElementById('mainMenu');
+            if (menu.style.display === 'flex') {
+                menu.style.display = 'none';
+            } else {
+                menu.style.display = 'flex';
+                menu.style.flexDirection = 'column';
+                menu.style.position = 'absolute';
+                menu.style.top = '80px';
+                menu.style.left = '0';
+                menu.style.width = '100%';
+                menu.style.background = 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)';
+                menu.style.padding = '1rem';
+            }
+        }
+
+        // Përshtatje për window resize
+        window.addEventListener('resize', () => {
+            const menu = document.getElementById('mainMenu');
+            if (window.innerWidth > 768) {
+                menu.style.display = 'flex';
+                menu.style.flexDirection = 'row';
+                menu.style.position = 'static';
+                menu.style.width = 'auto';
+                menu.style.background = 'transparent';
+                menu.style.padding = '0';
+            } else {
+                menu.style.display = 'none';
+            }
+        });
     </script>
 </body>
 </html>
