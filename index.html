@@ -39,6 +39,7 @@
             display: flex;
             align-items: center;
             gap: 10px;
+            cursor: pointer;
         }
 
         .logo-icon {
@@ -72,7 +73,7 @@
 
         .menu {
             display: flex;
-            gap: 2rem;
+            gap: 1rem;
             align-items: center;
         }
 
@@ -80,12 +81,13 @@
             color: white;
             text-decoration: none;
             font-weight: 500;
-            padding: 0.5rem 1rem;
+            padding: 0.5rem 1.2rem;
             border-radius: 25px;
             transition: all 0.3s;
             display: flex;
             align-items: center;
-            gap: 5px;
+            gap: 8px;
+            border: 2px solid transparent;
         }
 
         .menu-item:hover {
@@ -95,39 +97,28 @@
 
         .menu-item.active {
             background: rgba(255,255,255,0.3);
-            font-weight: 600;
+            border-color: white;
         }
 
-        .menu-item i {
-            font-size: 1.2rem;
-        }
-
-        .user-profile {
-            display: flex;
-            align-items: center;
-            gap: 15px;
-            margin-left: 20px;
-            padding-left: 20px;
-            border-left: 2px solid rgba(255,255,255,0.3);
-        }
-
-        .user-avatar {
-            width: 40px;
-            height: 40px;
-            background: rgba(255,255,255,0.2);
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
+        .admin-btn {
+            background: #ff4757;
             color: white;
-            font-size: 1.5rem;
+            border: none;
+            padding: 0.5rem 1.5rem;
+            border-radius: 25px;
             cursor: pointer;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 8px;
             transition: all 0.3s;
+            margin-left: 1rem;
         }
 
-        .user-avatar:hover {
-            background: rgba(255,255,255,0.3);
-            transform: scale(1.1);
+        .admin-btn:hover {
+            background: #ff6b81;
+            transform: scale(1.05);
+            box-shadow: 0 5px 15px rgba(255,71,87,0.4);
         }
 
         .menu-toggle {
@@ -144,313 +135,261 @@
             padding: 0 2rem;
         }
 
-        /* Stats Cards */
-        .stats-container {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 1.5rem;
-            margin-bottom: 2rem;
-        }
-
-        .stat-card {
-            background: white;
-            padding: 1.5rem;
-            border-radius: 15px;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
-            display: flex;
-            align-items: center;
-            gap: 1rem;
-            transition: transform 0.3s;
-        }
-
-        .stat-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 8px 25px rgba(0,0,0,0.15);
-        }
-
-        .stat-icon {
-            width: 60px;
-            height: 60px;
+        /* Hero Section me Slider */
+        .hero-section {
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            border-radius: 12px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: white;
-            font-size: 2rem;
-        }
-
-        .stat-info h3 {
-            color: #666;
-            font-size: 0.9rem;
-            font-weight: 400;
-        }
-
-        .stat-info p {
-            color: #333;
-            font-size: 2rem;
-            font-weight: 700;
-        }
-
-        /* Upload Section */
-        .upload-section {
-            background: white;
-            border-radius: 20px;
-            padding: 30px;
-            margin-bottom: 40px;
-            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
-        }
-
-        .section-header {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            margin-bottom: 20px;
-        }
-
-        .section-header h2 {
-            color: #333;
-            font-size: 1.5rem;
-        }
-
-        .section-header i {
-            font-size: 2rem;
-            color: #667eea;
-        }
-
-        .upload-area {
-            border: 3px dashed #667eea;
-            border-radius: 15px;
-            padding: 50px;
-            text-align: center;
-            cursor: pointer;
-            transition: all 0.3s;
-            background: #f8f9fa;
-        }
-
-        .upload-area:hover {
-            background: #e8f0fe;
-            border-color: #764ba2;
-            transform: scale(1.02);
-        }
-
-        .upload-area i {
-            font-size: 4rem;
-            color: #667eea;
-            margin-bottom: 1rem;
-        }
-
-        .upload-area h3 {
-            color: #333;
-            margin-bottom: 0.5rem;
-        }
-
-        .upload-area p {
-            color: #666;
-        }
-
-        .upload-area .small {
-            color: #999;
-            font-size: 0.9rem;
-            margin-top: 1rem;
-        }
-
-        #imageInput {
-            display: none;
-        }
-
-        .btn-upload {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            border: none;
-            padding: 15px 40px;
             border-radius: 30px;
+            padding: 3rem;
+            margin-bottom: 3rem;
+            color: white;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero-content {
+            position: relative;
+            z-index: 2;
+            max-width: 600px;
+        }
+
+        .hero-content h2 {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            animation: fadeInUp 1s ease;
+        }
+
+        .hero-content p {
+            font-size: 1.2rem;
+            margin-bottom: 2rem;
+            opacity: 0.9;
+            animation: fadeInUp 1s ease 0.2s both;
+        }
+
+        .hero-btn {
+            background: white;
+            color: #667eea;
+            border: none;
+            padding: 1rem 2.5rem;
+            border-radius: 50px;
             font-size: 1.1rem;
             font-weight: 600;
             cursor: pointer;
-            margin-top: 20px;
             transition: all 0.3s;
-            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+            animation: fadeInUp 1s ease 0.4s both;
         }
 
-        .btn-upload:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 8px 25px rgba(102, 126, 234, 0.5);
+        .hero-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
         }
 
-        /* Gallery Section */
-        .gallery-wrapper {
-            background: white;
-            border-radius: 20px;
-            padding: 30px;
-            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
-        }
-
-        .gallery-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 30px;
-            flex-wrap: wrap;
-            gap: 1rem;
-        }
-
-        .gallery-header h2 {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            color: #333;
-        }
-
-        .gallery-controls {
-            display: flex;
-            gap: 1rem;
-        }
-
-        .btn-clear {
-            background: #ff4757;
-            color: white;
-            border: none;
-            padding: 10px 25px;
-            border-radius: 25px;
-            cursor: pointer;
-            transition: all 0.3s;
-            display: flex;
-            align-items: center;
-            gap: 5px;
-            font-weight: 500;
-        }
-
-        .btn-clear:hover {
-            background: #ff6b81;
-            transform: translateY(-2px);
-        }
-
-        .btn-refresh {
-            background: #667eea;
-            color: white;
-            border: none;
-            padding: 10px 25px;
-            border-radius: 25px;
-            cursor: pointer;
-            transition: all 0.3s;
-            display: flex;
-            align-items: center;
-            gap: 5px;
-            font-weight: 500;
-        }
-
-        .btn-refresh:hover {
-            background: #764ba2;
-            transform: translateY(-2px) rotate(180deg);
-        }
-
-        .gallery {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-            gap: 25px;
-        }
-
-        .gallery-item {
-            background: white;
-            border-radius: 15px;
+        /* Slider */
+        .slider-container {
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 50%;
+            height: 100%;
             overflow: hidden;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
-            transition: all 0.3s;
-            cursor: pointer;
-            border: 1px solid rgba(0,0,0,0.05);
         }
 
-        .gallery-item:hover {
-            transform: translateY(-8px);
-            box-shadow: 0 12px 30px rgba(0,0,0,0.15);
-        }
-
-        .gallery-item img {
+        .slider {
             width: 100%;
-            height: 220px;
-            object-fit: cover;
-            transition: transform 0.5s;
+            height: 100%;
+            position: relative;
         }
 
-        .gallery-item:hover img {
-            transform: scale(1.05);
+        .slide {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            opacity: 0;
+            transition: opacity 1s ease;
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
         }
 
-        .image-info {
-            padding: 15px;
-            background: white;
+        .slide.active {
+            opacity: 1;
+        }
+
+        .slide-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, rgba(102,126,234,0.9) 0%, rgba(118,75,162,0.7) 100%);
+        }
+
+        .slider-controls {
+            position: absolute;
+            bottom: 20px;
+            right: 20px;
+            z-index: 10;
             display: flex;
-            justify-content: space-between;
-            align-items: center;
-            border-top: 1px solid #eee;
+            gap: 10px;
         }
 
-        .image-details {
-            flex: 1;
-        }
-
-        .image-name {
-            font-weight: 600;
-            color: #333;
-            margin-bottom: 4px;
-            overflow: hidden;
-            text-overflow: ellipsis;
-            white-space: nowrap;
-            max-width: 150px;
-        }
-
-        .image-date {
-            font-size: 0.8rem;
-            color: #999;
-        }
-
-        .delete-btn {
-            background: #ff4757;
-            color: white;
-            border: none;
-            width: 35px;
-            height: 35px;
+        .slider-control {
+            width: 40px;
+            height: 40px;
+            background: rgba(255,255,255,0.3);
+            border: 2px solid white;
             border-radius: 50%;
-            cursor: pointer;
             display: flex;
             align-items: center;
             justify-content: center;
+            color: white;
+            cursor: pointer;
             transition: all 0.3s;
             font-size: 1.2rem;
         }
 
-        .delete-btn:hover {
-            background: #ff6b81;
-            transform: rotate(90deg) scale(1.1);
+        .slider-control:hover {
+            background: white;
+            color: #667eea;
+            transform: scale(1.1);
         }
 
-        /* Modal */
-        .modal {
+        .slider-dots {
+            position: absolute;
+            bottom: 20px;
+            left: 20px;
+            z-index: 10;
+            display: flex;
+            gap: 10px;
+        }
+
+        .dot {
+            width: 12px;
+            height: 12px;
+            background: rgba(255,255,255,0.5);
+            border-radius: 50%;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .dot.active {
+            background: white;
+            transform: scale(1.3);
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Featured Gallery */
+        .section-title {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+
+        .section-title h2 {
+            font-size: 2.5rem;
+            color: #333;
+            margin-bottom: 1rem;
+        }
+
+        .section-title p {
+            color: #666;
+            font-size: 1.1rem;
+        }
+
+        .featured-gallery {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 2rem;
+            margin-bottom: 4rem;
+        }
+
+        .featured-card {
+            background: white;
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            transition: all 0.3s;
+            cursor: pointer;
+        }
+
+        .featured-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.2);
+        }
+
+        .featured-image {
+            height: 250px;
+            overflow: hidden;
+        }
+
+        .featured-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.5s;
+        }
+
+        .featured-card:hover .featured-image img {
+            transform: scale(1.1);
+        }
+
+        .featured-info {
+            padding: 1.5rem;
+        }
+
+        .featured-info h3 {
+            color: #333;
+            margin-bottom: 0.5rem;
+        }
+
+        .featured-info p {
+            color: #666;
+            margin-bottom: 1rem;
+        }
+
+        .featured-meta {
+            display: flex;
+            justify-content: space-between;
+            color: #999;
+            font-size: 0.9rem;
+        }
+
+        /* Lightbox */
+        .lightbox {
             display: none;
             position: fixed;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            background: rgba(0,0,0,0.9);
-            z-index: 1000;
+            background: rgba(0,0,0,0.95);
+            z-index: 2000;
             justify-content: center;
             align-items: center;
         }
 
-        .modal.active {
+        .lightbox.active {
             display: flex;
         }
 
-        .modal-content {
+        .lightbox-content {
             max-width: 90%;
             max-height: 90%;
             position: relative;
-            animation: modalZoom 0.3s;
+            animation: lightboxZoom 0.3s;
         }
 
-        @keyframes modalZoom {
+        @keyframes lightboxZoom {
             from {
                 transform: scale(0.8);
                 opacity: 0;
@@ -461,47 +400,216 @@
             }
         }
 
-        .modal-content img {
+        .lightbox-content img {
             width: 100%;
             height: auto;
+            max-height: 80vh;
+            object-fit: contain;
             border-radius: 10px;
             box-shadow: 0 0 30px rgba(0,0,0,0.5);
         }
 
-        .modal-close {
+        .lightbox-close {
             position: absolute;
-            top: -40px;
-            right: -40px;
+            top: -50px;
+            right: -50px;
             color: white;
             font-size: 3rem;
             cursor: pointer;
             transition: all 0.3s;
-            width: 50px;
-            height: 50px;
-            background: rgba(255,255,255,0.2);
+            width: 60px;
+            height: 60px;
+            background: rgba(255,255,255,0.1);
             border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
+            border: 2px solid white;
         }
 
-        .modal-close:hover {
+        .lightbox-close:hover {
+            background: #ff4757;
             transform: rotate(90deg) scale(1.1);
-            background: rgba(255,71,87,0.5);
         }
 
-        .empty-gallery {
-            text-align: center;
-            padding: 60px;
-            color: #999;
-            font-size: 1.2rem;
-            grid-column: 1 / -1;
+        .lightbox-nav {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 60px;
+            height: 60px;
+            background: rgba(255,255,255,0.1);
+            border: 2px solid white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 2rem;
+            cursor: pointer;
+            transition: all 0.3s;
         }
 
-        .empty-gallery i {
-            font-size: 4rem;
-            margin-bottom: 1rem;
+        .lightbox-nav:hover {
+            background: white;
             color: #667eea;
+            transform: translateY(-50%) scale(1.1);
+        }
+
+        .lightbox-prev {
+            left: -80px;
+        }
+
+        .lightbox-next {
+            right: -80px;
+        }
+
+        .lightbox-info {
+            position: absolute;
+            bottom: -60px;
+            left: 0;
+            right: 0;
+            text-align: center;
+            color: white;
+            font-size: 1.1rem;
+        }
+
+        /* Admin Panel */
+        .admin-panel {
+            display: none;
+            background: white;
+            border-radius: 30px;
+            padding: 2rem;
+            margin-top: 2rem;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        }
+
+        .admin-panel.active {
+            display: block;
+        }
+
+        .admin-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+            padding-bottom: 1rem;
+            border-bottom: 2px solid #eee;
+        }
+
+        .admin-header h2 {
+            color: #333;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .close-admin {
+            background: #ff4757;
+            color: white;
+            border: none;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 1.5rem;
+            transition: all 0.3s;
+        }
+
+        .close-admin:hover {
+            background: #ff6b81;
+            transform: rotate(90deg);
+        }
+
+        .upload-section {
+            background: #f8f9fa;
+            border-radius: 20px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .upload-area {
+            border: 3px dashed #667eea;
+            border-radius: 15px;
+            padding: 3rem;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .upload-area:hover {
+            background: #e8f0fe;
+            border-color: #764ba2;
+        }
+
+        .upload-area i {
+            font-size: 4rem;
+            color: #667eea;
+            margin-bottom: 1rem;
+        }
+
+        .admin-gallery {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .admin-item {
+            background: white;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            position: relative;
+        }
+
+        .admin-item img {
+            width: 100%;
+            height: 150px;
+            object-fit: cover;
+        }
+
+        .admin-item-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0,0,0,0.5);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 1rem;
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+
+        .admin-item:hover .admin-item-overlay {
+            opacity: 1;
+        }
+
+        .admin-item-btn {
+            background: white;
+            border: none;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-size: 1.2rem;
+        }
+
+        .admin-item-btn:hover {
+            transform: scale(1.1);
+        }
+
+        .admin-item-btn.delete:hover {
+            background: #ff4757;
+            color: white;
+        }
+
+        .admin-item-btn.feature:hover {
+            background: #667eea;
+            color: white;
         }
 
         /* Footer */
@@ -515,6 +623,39 @@
         }
 
         /* Responsive */
+        @media (max-width: 1024px) {
+            .slider-container {
+                position: relative;
+                width: 100%;
+                height: 300px;
+                margin-top: 2rem;
+            }
+
+            .hero-content {
+                max-width: 100%;
+                text-align: center;
+            }
+
+            .lightbox-nav {
+                width: 40px;
+                height: 40px;
+                font-size: 1.5rem;
+            }
+
+            .lightbox-prev {
+                left: 10px;
+            }
+
+            .lightbox-next {
+                right: 10px;
+            }
+
+            .lightbox-close {
+                top: 10px;
+                right: 10px;
+            }
+        }
+
         @media (max-width: 768px) {
             .menu {
                 display: none;
@@ -524,256 +665,204 @@
                 display: block;
             }
 
-            .user-profile {
-                display: none;
+            .hero-content h2 {
+                font-size: 2rem;
             }
 
-            .nav-container {
-                flex-wrap: wrap;
-            }
-
-            .stats-container {
+            .featured-gallery {
                 grid-template-columns: 1fr;
             }
-
-            .gallery {
-                grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-            }
-
-            .modal-close {
-                top: 10px;
-                right: 10px;
-            }
-        }
-
-        @media (max-width: 480px) {
-            .gallery {
-                grid-template-columns: 1fr;
-            }
-            
-            .upload-area {
-                padding: 30px 15px;
-            }
-        }
-
-        /* Loading Animation */
-        .loading {
-            display: inline-block;
-            width: 20px;
-            height: 20px;
-            border: 3px solid rgba(255,255,255,.3);
-            border-radius: 50%;
-            border-top-color: white;
-            animation: spin 1s ease-in-out infinite;
-        }
-
-        @keyframes spin {
-            to { transform: rotate(360deg); }
         }
     </style>
 </head>
 <body>
-    <!-- Header me Logo dhe Menu -->
+    <!-- Header -->
     <header class="header">
         <nav class="nav-container">
-            <div class="logo">
-                <div class="logo-icon">
-                    📸
-                </div>
+            <div class="logo" onclick="showHome()">
+                <div class="logo-icon">📸</div>
                 <div class="logo-text">
                     <h1>ART-STONE</h1>
                     <p>Shpërndaji momentet tua</p>
                 </div>
             </div>
 
-            <div class="menu-toggle" onclick="toggleMenu()">
-                ☰
-            </div>
+            <div class="menu-toggle" onclick="toggleMenu()">☰</div>
 
             <div class="menu" id="mainMenu">
-                <a href="#" class="menu-item active" onclick="setActive(this)">
+                <a href="#" class="menu-item active" onclick="setActive(this); showHome()">
                     <span>🏠</span> Ballina
                 </a>
-                <a href="#" class="menu-item" onclick="setActive(this)">
+                <a href="#" class="menu-item" onclick="setActive(this); showGallery()">
                     <span>🖼️</span> Gallery
                 </a>
-                <a href="#" class="menu-item" onclick="setActive(this)">
-                    <span>⭐</span> Të preferuarat
-                </a>
-                <a href="#" class="menu-item" onclick="setActive(this)">
-                    <span>🏷️</span> Albumet
-                </a>
-                <a href="#" class="menu-item" onclick="setActive(this)">
+                <a href="#" class="menu-item" onclick="setActive(this); showAbout()">
                     <span>ℹ️</span> Rreth nesh
                 </a>
-
-                <div class="user-profile">
-                    <div class="user-avatar" title="Profili im">
-                        👤
-                    </div>
-                </div>
+                <button class="admin-btn" onclick="toggleAdmin()">
+                    <span>👨‍💼</span> Admin
+                </button>
             </div>
         </nav>
     </header>
 
     <div class="main-container">
-        <!-- Stats Cards -->
-        <div class="stats-container" id="statsContainer">
-            <div class="stat-card">
-                <div class="stat-icon">📸</div>
-                <div class="stat-info">
-                    <h3>Total Imazhe</h3>
-                    <p id="totalImages">0</p>
-                </div>
+        <!-- Hero Section me Slider (Vetëm në Ballinë) -->
+        <div class="hero-section" id="heroSection">
+            <div class="hero-content">
+                <h2>Mirë se vini në GalleryApp</h2>
+                <p>Zbuloni imazhet më të bukura të ngarkuara nga komuniteti ynë. Gallery moderne për të apasionuarit pas fotografisë.</p>
+                <button class="hero-btn" onclick="showGallery()">Shiko Gallery →</button>
             </div>
-            <div class="stat-card">
-                <div class="stat-icon">💾</div>
-                <div class="stat-info">
-                    <h3>Hapsira e përdorur</h3>
-                    <p id="totalSize">0 MB</p>
+            <div class="slider-container">
+                <div class="slider" id="homeSlider"></div>
+                <div class="slider-controls">
+                    <div class="slider-control" onclick="prevSlide()">←</div>
+                    <div class="slider-control" onclick="nextSlide()">→</div>
                 </div>
-            </div>
-            <div class="stat-card">
-                <div class="stat-icon">📅</div>
-                <div class="stat-info">
-                    <h3>Ngarkuar sot</h3>
-                    <p id="todayCount">0</p>
-                </div>
-            </div>
-            <div class="stat-card">
-                <div class="stat-icon">🏷️</div>
-                <div class="stat-info">
-                    <h3>Albumet</h3>
-                    <p>3</p>
-                </div>
+                <div class="slider-dots" id="sliderDots"></div>
             </div>
         </div>
 
-        <!-- Upload Section -->
-        <div class="upload-section">
-            <div class="section-header">
-                <span>📤</span>
-                <h2>Ngarko imazhe të reja</h2>
+        <!-- Featured Gallery -->
+        <div class="featured-section" id="featuredSection">
+            <div class="section-title">
+                <h2>Featured Gallery</h2>
+                <p>Imazhet më të fundit të ngarkuara nga përdoruesit</p>
             </div>
-            <div class="upload-area" id="uploadArea">
-                <span>📁</span>
-                <h3>Zvarrit imazhet këtu</h3>
-                <p>ose kliko për të zgjedhur</p>
-                <p class="small">Supported formats: JPG, PNG, GIF (max 10MB)</p>
+            <div class="featured-gallery" id="featuredGallery"></div>
+        </div>
+
+        <!-- Gallery Grid (Fshehur fillimisht) -->
+        <div class="gallery-wrapper" id="galleryWrapper" style="display: none;">
+            <div class="section-title">
+                <h2>Gallery</h2>
+                <p>Të gjitha imazhet e ngarkuara</p>
             </div>
-            <input type="file" id="imageInput" accept="image/*" multiple>
-            <div style="text-align: center;">
-                <button class="btn-upload" id="uploadBtn">
-                    <span>📤</span> Zgjidh Imazhe
-                </button>
+            <div class="featured-gallery" id="fullGallery"></div>
+        </div>
+
+        <!-- About Section (Fshehur fillimisht) -->
+        <div class="about-section" id="aboutSection" style="display: none;">
+            <div class="section-title">
+                <h2>Rreth nesh</h2>
+                <p>Mësoni më shumë rreth GalleryApp</p>
+            </div>
+            <div style="background: white; border-radius: 20px; padding: 3rem; text-align: center;">
+                <h3 style="font-size: 2rem; margin-bottom: 1rem;">GalleryApp</h3>
+                <p style="font-size: 1.1rem; color: #666; max-width: 800px; margin: 0 auto; line-height: 1.8;">
+                    GalleryApp është një platformë moderne për ndarjen e imazheve. 
+                    Krijuar me pasion për fotografinë dhe teknologjinë. 
+                    Qëllimi ynë është të ofrojmë një përvojë të shkëlqyer për të apasionuarit pas fotografisë.
+                </p>
             </div>
         </div>
 
-        <!-- Gallery Section -->
-        <div class="gallery-wrapper">
-            <div class="gallery-header">
+        <!-- Admin Panel -->
+        <div class="admin-panel" id="adminPanel">
+            <div class="admin-header">
                 <h2>
-                    <span>🖼️</span> 
-                    Gallery
+                    <span>👨‍💼</span>
+                    Admin Panel - Menaxho Imazhet
                 </h2>
-                <div class="gallery-controls">
-                    <button class="btn-refresh" id="refreshGallery" onclick="app.refreshGallery()">
-                        <span>🔄</span> Rifresko
-                    </button>
-                    <button class="btn-clear" id="clearGallery">
-                        <span>🗑️</span> Pastro të gjitha
-                    </button>
+                <button class="close-admin" onclick="toggleAdmin()">✕</button>
+            </div>
+
+            <!-- Upload Section -->
+            <div class="upload-section">
+                <div class="upload-area" id="adminUploadArea">
+                    <div>📤</div>
+                    <h3>Zvarrit imazhet këtu</h3>
+                    <p>ose kliko për të zgjedhur</p>
+                    <p style="color: #999; margin-top: 1rem;">Supported formats: JPG, PNG, GIF (max 10MB)</p>
+                </div>
+                <input type="file" id="adminImageInput" accept="image/*" multiple>
+                <div style="text-align: center; margin-top: 1rem;">
+                    <button class="hero-btn" id="adminUploadBtn" style="background: #667eea; color: white;">Zgjidh Imazhe</button>
                 </div>
             </div>
 
-            <div class="gallery" id="gallery">
-                <div class="empty-gallery">
-                    <span>📸</span>
-                    <p>Asnjë imazh në gallery. Ngarko disa imazhe!</p>
-                </div>
-            </div>
+            <!-- Admin Gallery -->
+            <h3 style="margin-bottom: 1rem;">Imazhet e ngarkuara</h3>
+            <div class="admin-gallery" id="adminGallery"></div>
         </div>
+    </div>
+
+    <!-- Lightbox -->
+    <div class="lightbox" id="lightbox">
+        <span class="lightbox-close" onclick="closeLightbox()">&times;</span>
+        <div class="lightbox-nav lightbox-prev" onclick="prevLightbox()">←</div>
+        <div class="lightbox-nav lightbox-next" onclick="nextLightbox()">→</div>
+        <div class="lightbox-content">
+            <img id="lightboxImage" src="" alt="">
+        </div>
+        <div class="lightbox-info" id="lightboxInfo"></div>
     </div>
 
     <!-- Footer -->
     <footer class="footer">
         <p>© 2024 GalleryApp - Të gjitha të drejtat e rezervuara</p>
-        <p style="margin-top: 0.5rem; font-size: 0.9rem;">Krijuar me ❤️ për të apasionuarit pas fotografisë</p>
+        <p style="margin-top: 0.5rem;">Krijuar me ❤️ për të apasionuarit pas fotografisë</p>
     </footer>
-
-    <!-- Modal -->
-    <div class="modal" id="modal">
-        <span class="modal-close" id="modalClose">&times;</span>
-        <div class="modal-content">
-            <img id="modalImage" src="" alt="Imazh i zmadhuar">
-        </div>
-    </div>
 
     <script>
         class GalleryApp {
             constructor() {
                 this.images = JSON.parse(localStorage.getItem('galleryImages')) || [];
-                this.modal = document.getElementById('modal');
-                this.modalImage = document.getElementById('modalImage');
-                this.gallery = document.getElementById('gallery');
-                this.imageInput = document.getElementById('imageInput');
-                this.uploadArea = document.getElementById('uploadArea');
-                this.uploadBtn = document.getElementById('uploadBtn');
-                this.clearBtn = document.getElementById('clearGallery');
-                this.modalClose = document.getElementById('modalClose');
-                this.today = new Date().toDateString();
+                this.currentSlide = 0;
+                this.currentLightboxIndex = 0;
+                this.currentView = 'home';
+                this.slideInterval = null;
                 
                 this.init();
             }
 
             init() {
-                this.renderGallery();
-                this.updateStats();
+                this.renderFeatured();
+                this.renderAdminGallery();
+                this.initSlider();
                 this.bindEvents();
+                this.startSlider();
             }
 
             bindEvents() {
-                this.uploadArea.addEventListener('click', () => this.imageInput.click());
-                this.uploadBtn.addEventListener('click', () => this.imageInput.click());
-                this.imageInput.addEventListener('change', (e) => this.handleImageUpload(e));
-                this.clearBtn.addEventListener('click', () => this.clearGallery());
-                this.modalClose.addEventListener('click', () => this.closeModal());
+                // Admin upload events
+                const adminUploadArea = document.getElementById('adminUploadArea');
+                const adminImageInput = document.getElementById('adminImageInput');
+                const adminUploadBtn = document.getElementById('adminUploadBtn');
+
+                adminUploadArea.addEventListener('click', () => adminImageInput.click());
+                adminUploadBtn.addEventListener('click', () => adminImageInput.click());
                 
-                this.uploadArea.addEventListener('dragover', (e) => {
+                adminImageInput.addEventListener('change', (e) => this.handleImageUpload(e));
+
+                adminUploadArea.addEventListener('dragover', (e) => {
                     e.preventDefault();
-                    this.uploadArea.style.background = '#e8f0fe';
-                    this.uploadArea.style.borderColor = '#764ba2';
+                    adminUploadArea.style.background = '#e8f0fe';
                 });
 
-                this.uploadArea.addEventListener('dragleave', () => {
-                    this.uploadArea.style.background = '#f8f9fa';
-                    this.uploadArea.style.borderColor = '#667eea';
+                adminUploadArea.addEventListener('dragleave', () => {
+                    adminUploadArea.style.background = '';
                 });
 
-                this.uploadArea.addEventListener('drop', (e) => {
+                adminUploadArea.addEventListener('drop', (e) => {
                     e.preventDefault();
-                    this.uploadArea.style.background = '#f8f9fa';
-                    this.uploadArea.style.borderColor = '#667eea';
-                    const files = e.dataTransfer.files;
-                    this.processFiles(files);
+                    adminUploadArea.style.background = '';
+                    this.processFiles(e.dataTransfer.files);
                 });
 
-                window.addEventListener('click', (e) => {
-                    if (e.target === this.modal) {
-                        this.closeModal();
-                    }
-                });
-
-                window.addEventListener('keydown', (e) => {
-                    if (e.key === 'Escape' && this.modal.classList.contains('active')) {
-                        this.closeModal();
+                // Lightbox keyboard events
+                document.addEventListener('keydown', (e) => {
+                    if (document.getElementById('lightbox').classList.contains('active')) {
+                        if (e.key === 'Escape') this.closeLightbox();
+                        if (e.key === 'ArrowLeft') this.prevLightbox();
+                        if (e.key === 'ArrowRight') this.nextLightbox();
                     }
                 });
             }
 
             handleImageUpload(e) {
-                const files = e.target.files;
-                this.processFiles(files);
+                this.processFiles(e.target.files);
             }
 
             processFiles(files) {
@@ -791,116 +880,301 @@
                                 name: file.name,
                                 data: e.target.result,
                                 size: file.size,
-                                date: new Date().toISOString()
+                                date: new Date().toISOString(),
+                                featured: this.images.length < 3 // First 3 are featured
                             });
                             this.saveToLocalStorage();
-                            this.renderGallery();
-                            this.updateStats();
+                            this.renderFeatured();
+                            this.renderAdminGallery();
+                            this.updateSlider();
                         };
                         reader.readAsDataURL(file);
-                    } else {
-                        alert(`${file.name} nuk është një imazh i vlefshëm`);
                     }
                 });
                 
-                this.imageInput.value = '';
+                document.getElementById('adminImageInput').value = '';
             }
 
             deleteImage(id) {
                 if (confirm('Jeni i sigurt që doni ta fshini këtë imazh?')) {
                     this.images = this.images.filter(img => img.id !== id);
                     this.saveToLocalStorage();
-                    this.renderGallery();
-                    this.updateStats();
+                    this.renderFeatured();
+                    this.renderAdminGallery();
+                    this.updateSlider();
+                    
+                    if (this.images.length === 0) {
+                        this.stopSlider();
+                    }
                 }
             }
 
-            clearGallery() {
-                if (this.images.length === 0) {
-                    alert('Nuk ka imazhe për të fshirë!');
-                    return;
-                }
-                
-                if (confirm('Jeni i sigurt që doni të fshini të gjitha imazhet?')) {
-                    this.images = [];
-                    this.saveToLocalStorage();
-                    this.renderGallery();
-                    this.updateStats();
-                }
-            }
-
-            refreshGallery() {
-                const btn = document.getElementById('refreshGallery');
-                btn.innerHTML = '<span class="loading"></span>';
-                
-                setTimeout(() => {
-                    this.renderGallery();
-                    this.updateStats();
-                    btn.innerHTML = '<span>🔄</span> Rifresko';
-                }, 500);
-            }
-
-            openModal(imageSrc) {
-                this.modalImage.src = imageSrc;
-                this.modal.classList.add('active');
-            }
-
-            closeModal() {
-                this.modal.classList.remove('active');
+            toggleFeatured(id) {
+                this.images = this.images.map(img => {
+                    if (img.id === id) {
+                        img.featured = !img.featured;
+                    }
+                    return img;
+                });
+                this.saveToLocalStorage();
+                this.renderFeatured();
             }
 
             saveToLocalStorage() {
                 localStorage.setItem('galleryImages', JSON.stringify(this.images));
             }
 
-            updateStats() {
-                document.getElementById('totalImages').textContent = this.images.length;
-                
-                const totalSize = this.images.reduce((acc, img) => acc + (img.size || 0), 0);
-                const sizeInMB = (totalSize / (1024 * 1024)).toFixed(2);
-                document.getElementById('totalSize').textContent = sizeInMB + ' MB';
-                
-                const todayCount = this.images.filter(img => {
-                    return img.date && new Date(img.date).toDateString() === this.today;
-                }).length;
-                document.getElementById('todayCount').textContent = todayCount;
-            }
-
-            formatDate(dateString) {
-                if (!dateString) return 'N/A';
-                const date = new Date(dateString);
-                return date.toLocaleDateString('sq-AL');
-            }
-
-            renderGallery() {
+            // Slider functions
+            initSlider() {
+                const slider = document.getElementById('homeSlider');
                 if (this.images.length === 0) {
-                    this.gallery.innerHTML = `
-                        <div class="empty-gallery">
-                            <span>📸</span>
-                            <p>Asnjë imazh në gallery. Ngarko disa imazhe!</p>
+                    slider.innerHTML = `
+                        <div class="slide active" style="background-image: url('https://via.placeholder.com/800x600/667eea/ffffff?text=GalleryApp')">
+                            <div class="slide-overlay"></div>
                         </div>
                     `;
                     return;
                 }
 
-                this.gallery.innerHTML = this.images.map(image => `
-                    <div class="gallery-item">
-                        <img src="${image.data}" alt="${image.name}" onclick="app.openModal('${image.data}')">
-                        <div class="image-info">
-                            <div class="image-details">
-                                <div class="image-name" title="${image.name}">${image.name}</div>
-                                <div class="image-date">${this.formatDate(image.date)}</div>
+                this.renderSlider();
+            }
+
+            renderSlider() {
+                const slider = document.getElementById('homeSlider');
+                const dotsContainer = document.getElementById('sliderDots');
+                
+                if (this.images.length === 0) {
+                    slider.innerHTML = `
+                        <div class="slide active" style="background-image: url('https://via.placeholder.com/800x600/667eea/ffffff?text=GalleryApp')">
+                            <div class="slide-overlay"></div>
+                        </div>
+                    `;
+                    dotsContainer.innerHTML = '<div class="dot active"></div>';
+                    return;
+                }
+
+                // Show only first 5 images in slider
+                const sliderImages = this.images.slice(0, 5);
+                
+                slider.innerHTML = sliderImages.map((img, index) => `
+                    <div class="slide ${index === 0 ? 'active' : ''}" 
+                         style="background-image: url('${img.data}')">
+                        <div class="slide-overlay"></div>
+                    </div>
+                `).join('');
+
+                dotsContainer.innerHTML = sliderImages.map((_, index) => `
+                    <div class="dot ${index === 0 ? 'active' : ''}" 
+                         onclick="app.goToSlide(${index})"></div>
+                `).join('');
+            }
+
+            startSlider() {
+                if (this.slideInterval) clearInterval(this.slideInterval);
+                this.slideInterval = setInterval(() => this.nextSlide(), 5000);
+            }
+
+            stopSlider() {
+                if (this.slideInterval) {
+                    clearInterval(this.slideInterval);
+                    this.slideInterval = null;
+                }
+            }
+
+            nextSlide() {
+                const slides = document.querySelectorAll('.slide');
+                const dots = document.querySelectorAll('.dot');
+                
+                if (slides.length === 0) return;
+                
+                slides[this.currentSlide].classList.remove('active');
+                dots[this.currentSlide]?.classList.remove('active');
+                
+                this.currentSlide = (this.currentSlide + 1) % slides.length;
+                
+                slides[this.currentSlide].classList.add('active');
+                dots[this.currentSlide]?.classList.add('active');
+            }
+
+            prevSlide() {
+                const slides = document.querySelectorAll('.slide');
+                const dots = document.querySelectorAll('.dot');
+                
+                if (slides.length === 0) return;
+                
+                slides[this.currentSlide].classList.remove('active');
+                dots[this.currentSlide]?.classList.remove('active');
+                
+                this.currentSlide = (this.currentSlide - 1 + slides.length) % slides.length;
+                
+                slides[this.currentSlide].classList.add('active');
+                dots[this.currentSlide]?.classList.add('active');
+            }
+
+            goToSlide(index) {
+                const slides = document.querySelectorAll('.slide');
+                const dots = document.querySelectorAll('.dot');
+                
+                if (slides.length === 0) return;
+                
+                slides[this.currentSlide].classList.remove('active');
+                dots[this.currentSlide]?.classList.remove('active');
+                
+                this.currentSlide = index;
+                
+                slides[this.currentSlide].classList.add('active');
+                dots[this.currentSlide]?.classList.add('active');
+            }
+
+            updateSlider() {
+                this.renderSlider();
+                this.currentSlide = 0;
+                if (this.images.length > 0) {
+                    this.startSlider();
+                }
+            }
+
+            // Lightbox functions
+            openLightbox(index, source = 'featured') {
+                this.currentLightboxIndex = index;
+                this.lightboxSource = source;
+                
+                const images = source === 'featured' ? 
+                    this.images.filter(img => img.featured) : 
+                    this.images;
+                
+                if (images.length === 0) return;
+                
+                const lightbox = document.getElementById('lightbox');
+                const lightboxImg = document.getElementById('lightboxImage');
+                const lightboxInfo = document.getElementById('lightboxInfo');
+                
+                lightboxImg.src = images[index].data;
+                lightboxInfo.textContent = `${images[index].name} - ${new Date(images[index].date).toLocaleDateString('sq-AL')}`;
+                lightbox.classList.add('active');
+                
+                this.stopSlider();
+            }
+
+            closeLightbox() {
+                document.getElementById('lightbox').classList.remove('active');
+                this.startSlider();
+            }
+
+            nextLightbox() {
+                const images = this.lightboxSource === 'featured' ? 
+                    this.images.filter(img => img.featured) : 
+                    this.images;
+                
+                this.currentLightboxIndex = (this.currentLightboxIndex + 1) % images.length;
+                
+                const lightboxImg = document.getElementById('lightboxImage');
+                const lightboxInfo = document.getElementById('lightboxInfo');
+                
+                lightboxImg.src = images[this.currentLightboxIndex].data;
+                lightboxInfo.textContent = `${images[this.currentLightboxIndex].name} - ${new Date(images[this.currentLightboxIndex].date).toLocaleDateString('sq-AL')}`;
+            }
+
+            prevLightbox() {
+                const images = this.lightboxSource === 'featured' ? 
+                    this.images.filter(img => img.featured) : 
+                    this.images;
+                
+                this.currentLightboxIndex = (this.currentLightboxIndex - 1 + images.length) % images.length;
+                
+                const lightboxImg = document.getElementById('lightboxImage');
+                const lightboxInfo = document.getElementById('lightboxInfo');
+                
+                lightboxImg.src = images[this.currentLightboxIndex].data;
+                lightboxInfo.textContent = `${images[this.currentLightboxIndex].name} - ${new Date(images[this.currentLightboxIndex].date).toLocaleDateString('sq-AL')}`;
+            }
+
+            // Render functions
+            renderFeatured() {
+                const featuredImages = this.images.filter(img => img.featured).slice(0, 3);
+                const container = document.getElementById('featuredGallery');
+                
+                if (featuredImages.length === 0) {
+                    container.innerHTML = `
+                        <div style="grid-column: 1/-1; text-align: center; padding: 3rem; color: #999;">
+                            <div style="font-size: 4rem; margin-bottom: 1rem;">📸</div>
+                            <p>Asnjë imazh i featured. Shkoni te Admin për të shtuar.</p>
+                        </div>
+                    `;
+                    return;
+                }
+
+                container.innerHTML = featuredImages.map((img, index) => `
+                    <div class="featured-card" onclick="app.openLightbox(${index}, 'featured')">
+                        <div class="featured-image">
+                            <img src="${img.data}" alt="${img.name}">
+                        </div>
+                        <div class="featured-info">
+                            <h3>${img.name.substring(0, 30)}${img.name.length > 30 ? '...' : ''}</h3>
+                            <p>Ngarkuar: ${new Date(img.date).toLocaleDateString('sq-AL')}</p>
+                            <div class="featured-meta">
+                                <span>❤️ Featured</span>
+                                <span>📅 ${new Date(img.date).toLocaleDateString('sq-AL')}</span>
                             </div>
-                            <button class="delete-btn" onclick="event.stopPropagation(); app.deleteImage(${image.id})">✕</button>
+                        </div>
+                    </div>
+                `).join('');
+
+                // Render full gallery
+                const fullContainer = document.getElementById('fullGallery');
+                if (fullContainer) {
+                    fullContainer.innerHTML = this.images.map((img, index) => `
+                        <div class="featured-card" onclick="app.openLightbox(${index}, 'all')">
+                            <div class="featured-image">
+                                <img src="${img.data}" alt="${img.name}">
+                            </div>
+                            <div class="featured-info">
+                                <h3>${img.name.substring(0, 30)}${img.name.length > 30 ? '...' : ''}</h3>
+                                <p>Ngarkuar: ${new Date(img.date).toLocaleDateString('sq-AL')}</p>
+                                <div class="featured-meta">
+                                    <span>${img.featured ? '⭐ Featured' : '📸 Normal'}</span>
+                                    <span>📅 ${new Date(img.date).toLocaleDateString('sq-AL')}</span>
+                                </div>
+                            </div>
+                        </div>
+                    `).join('');
+                }
+            }
+
+            renderAdminGallery() {
+                const container = document.getElementById('adminGallery');
+                
+                if (this.images.length === 0) {
+                    container.innerHTML = `
+                        <div style="grid-column: 1/-1; text-align: center; padding: 2rem; color: #999;">
+                            Asnjë imazh i ngarkuar. Ngarko imazhet e para!
+                        </div>
+                    `;
+                    return;
+                }
+
+                container.innerHTML = this.images.map(img => `
+                    <div class="admin-item">
+                        <img src="${img.data}" alt="${img.name}">
+                        <div class="admin-item-overlay">
+                            <button class="admin-item-btn ${img.featured ? 'feature' : ''}" 
+                                    onclick="event.stopPropagation(); app.toggleFeatured(${img.id})">
+                                ${img.featured ? '⭐' : '☆'}
+                            </button>
+                            <button class="admin-item-btn delete" 
+                                    onclick="event.stopPropagation(); app.deleteImage(${img.id})">
+                                🗑️
+                            </button>
                         </div>
                     </div>
                 `).join('');
             }
         }
 
+        // Initialize app
         const app = new GalleryApp();
 
-        // Funksionet ndihmëse për menu
+        // Navigation functions
         function setActive(element) {
             document.querySelectorAll('.menu-item').forEach(item => {
                 item.classList.remove('active');
@@ -921,10 +1195,48 @@
                 menu.style.width = '100%';
                 menu.style.background = 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)';
                 menu.style.padding = '1rem';
+                menu.style.zIndex = '99';
             }
         }
 
-        // Përshtatje për window resize
+        function showHome() {
+            document.getElementById('heroSection').style.display = 'block';
+            document.getElementById('featuredSection').style.display = 'block';
+            document.getElementById('galleryWrapper').style.display = 'none';
+            document.getElementById('aboutSection').style.display = 'none';
+            app.startSlider();
+        }
+
+        function showGallery() {
+            document.getElementById('heroSection').style.display = 'none';
+            document.getElementById('featuredSection').style.display = 'none';
+            document.getElementById('galleryWrapper').style.display = 'block';
+            document.getElementById('aboutSection').style.display = 'none';
+            app.stopSlider();
+        }
+
+        function showAbout() {
+            document.getElementById('heroSection').style.display = 'none';
+            document.getElementById('featuredSection').style.display = 'none';
+            document.getElementById('galleryWrapper').style.display = 'none';
+            document.getElementById('aboutSection').style.display = 'block';
+            app.stopSlider();
+        }
+
+        function toggleAdmin() {
+            const adminPanel = document.getElementById('adminPanel');
+            adminPanel.classList.toggle('active');
+            
+            if (adminPanel.classList.contains('active')) {
+                app.stopSlider();
+            } else {
+                if (document.getElementById('heroSection').style.display !== 'none') {
+                    app.startSlider();
+                }
+            }
+        }
+
+        // Window resize handler
         window.addEventListener('resize', () => {
             const menu = document.getElementById('mainMenu');
             if (window.innerWidth > 768) {
