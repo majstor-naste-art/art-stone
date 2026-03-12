@@ -88,6 +88,7 @@
             align-items: center;
             gap: 8px;
             border: 2px solid transparent;
+            cursor: pointer;
         }
 
         .menu-item:hover {
@@ -364,6 +365,64 @@
             font-size: 0.9rem;
         }
 
+        /* Gallery Grid - Full Gallery */
+        .gallery-wrapper {
+            background: white;
+            border-radius: 30px;
+            padding: 2rem;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        }
+
+        .gallery-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .gallery-item {
+            background: white;
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            transition: all 0.3s;
+            cursor: pointer;
+            border: 1px solid #eee;
+        }
+
+        .gallery-item:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 30px rgba(0,0,0,0.15);
+        }
+
+        .gallery-item img {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+            transition: transform 0.5s;
+        }
+
+        .gallery-item:hover img {
+            transform: scale(1.05);
+        }
+
+        .gallery-item-info {
+            padding: 1rem;
+        }
+
+        .gallery-item-info h4 {
+            color: #333;
+            margin-bottom: 0.5rem;
+            font-size: 1rem;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        .gallery-item-info p {
+            color: #999;
+            font-size: 0.8rem;
+        }
+
         /* Lightbox */
         .lightbox {
             display: none;
@@ -612,6 +671,29 @@
             color: white;
         }
 
+        /* About Section */
+        .about-section {
+            background: white;
+            border-radius: 30px;
+            padding: 3rem;
+            text-align: center;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        }
+
+        .about-section h3 {
+            font-size: 2rem;
+            margin-bottom: 1rem;
+            color: #333;
+        }
+
+        .about-section p {
+            font-size: 1.1rem;
+            color: #666;
+            max-width: 800px;
+            margin: 0 auto;
+            line-height: 1.8;
+        }
+
         /* Footer */
         .footer {
             background: white;
@@ -672,6 +754,16 @@
             .featured-gallery {
                 grid-template-columns: 1fr;
             }
+
+            .gallery-grid {
+                grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            }
+        }
+
+        @media (max-width: 480px) {
+            .gallery-grid {
+                grid-template-columns: 1fr;
+            }
         }
     </style>
 </head>
@@ -690,15 +782,15 @@
             <div class="menu-toggle" onclick="toggleMenu()">☰</div>
 
             <div class="menu" id="mainMenu">
-                <a href="#" class="menu-item active" onclick="setActive(this); showHome()">
+                <div class="menu-item active" onclick="setActive(this); showHome()">
                     <span>🏠</span> Ballina
-                </a>
-                <a href="#" class="menu-item" onclick="setActive(this); showGallery()">
+                </div>
+                <div class="menu-item" onclick="setActive(this); showGallery()">
                     <span>🖼️</span> Gallery
-                </a>
-                <a href="#" class="menu-item" onclick="setActive(this); showAbout()">
+                </div>
+                <div class="menu-item" onclick="setActive(this); showAbout()">
                     <span>ℹ️</span> Rreth nesh
-                </a>
+                </div>
                 <button class="admin-btn" onclick="toggleAdmin()">
                     <span>👨‍💼</span> Admin
                 </button>
@@ -717,45 +809,35 @@
             <div class="slider-container">
                 <div class="slider" id="homeSlider"></div>
                 <div class="slider-controls">
-                    <div class="slider-control" onclick="prevSlide()">←</div>
-                    <div class="slider-control" onclick="nextSlide()">→</div>
+                    <div class="slider-control" onclick="app.prevSlide()">←</div>
+                    <div class="slider-control" onclick="app.nextSlide()">→</div>
                 </div>
                 <div class="slider-dots" id="sliderDots"></div>
             </div>
         </div>
 
-        <!-- Featured Gallery -->
+        <!-- Featured Gallery (Vetëm në Ballinë) -->
         <div class="featured-section" id="featuredSection">
             <div class="section-title">
                 <h2>Featured Gallery</h2>
-                <p>Imazhet më të fundit të ngarkuara nga përdoruesit</p>
+                <p>Imazhet më të fundit të ngarkuara</p>
             </div>
             <div class="featured-gallery" id="featuredGallery"></div>
         </div>
 
-        <!-- Gallery Grid (Fshehur fillimisht) -->
+        <!-- Full Gallery (Shfaqet kur klikon Gallery) -->
         <div class="gallery-wrapper" id="galleryWrapper" style="display: none;">
             <div class="section-title">
-                <h2>Gallery</h2>
-                <p>Të gjitha imazhet e ngarkuara</p>
+                <h2>Të Gjitha Fotot</h2>
+                <p>Këtu janë të gjitha fotot e ngarkuara</p>
             </div>
-            <div class="featured-gallery" id="fullGallery"></div>
+            <div class="gallery-grid" id="fullGallery"></div>
         </div>
 
-        <!-- About Section (Fshehur fillimisht) -->
+        <!-- About Section -->
         <div class="about-section" id="aboutSection" style="display: none;">
-            <div class="section-title">
-                <h2>Rreth nesh</h2>
-                <p>Mësoni më shumë rreth GalleryApp</p>
-            </div>
-            <div style="background: white; border-radius: 20px; padding: 3rem; text-align: center;">
-                <h3 style="font-size: 2rem; margin-bottom: 1rem;">GalleryApp</h3>
-                <p style="font-size: 1.1rem; color: #666; max-width: 800px; margin: 0 auto; line-height: 1.8;">
-                    GalleryApp është një platformë moderne për ndarjen e imazheve. 
-                    Krijuar me pasion për fotografinë dhe teknologjinë. 
-                    Qëllimi ynë është të ofrojmë një përvojë të shkëlqyer për të apasionuarit pas fotografisë.
-                </p>
-            </div>
+            <h3>Rreth nesh</h3>
+            <p>GalleryApp është një platformë moderne për ndarjen e imazheve. Krijuar me pasion për fotografinë dhe teknologjinë. Qëllimi ynë është të ofrojmë një përvojë të shkëlqyer për të apasionuarit pas fotografisë.</p>
         </div>
 
         <!-- Admin Panel -->
@@ -771,12 +853,12 @@
             <!-- Upload Section -->
             <div class="upload-section">
                 <div class="upload-area" id="adminUploadArea">
-                    <div>📤</div>
+                    <div style="font-size: 4rem; margin-bottom: 1rem;">📤</div>
                     <h3>Zvarrit imazhet këtu</h3>
                     <p>ose kliko për të zgjedhur</p>
                     <p style="color: #999; margin-top: 1rem;">Supported formats: JPG, PNG, GIF (max 10MB)</p>
                 </div>
-                <input type="file" id="adminImageInput" accept="image/*" multiple>
+                <input type="file" id="adminImageInput" accept="image/*" multiple style="display: none;">
                 <div style="text-align: center; margin-top: 1rem;">
                     <button class="hero-btn" id="adminUploadBtn" style="background: #667eea; color: white;">Zgjidh Imazhe</button>
                 </div>
@@ -790,9 +872,9 @@
 
     <!-- Lightbox -->
     <div class="lightbox" id="lightbox">
-        <span class="lightbox-close" onclick="closeLightbox()">&times;</span>
-        <div class="lightbox-nav lightbox-prev" onclick="prevLightbox()">←</div>
-        <div class="lightbox-nav lightbox-next" onclick="nextLightbox()">→</div>
+        <span class="lightbox-close" onclick="app.closeLightbox()">&times;</span>
+        <div class="lightbox-nav lightbox-prev" onclick="app.prevLightbox()">←</div>
+        <div class="lightbox-nav lightbox-next" onclick="app.nextLightbox()">→</div>
         <div class="lightbox-content">
             <img id="lightboxImage" src="" alt="">
         </div>
@@ -811,7 +893,7 @@
                 this.images = JSON.parse(localStorage.getItem('galleryImages')) || [];
                 this.currentSlide = 0;
                 this.currentLightboxIndex = 0;
-                this.currentView = 'home';
+                this.currentLightboxImages = [];
                 this.slideInterval = null;
                 
                 this.init();
@@ -819,6 +901,7 @@
 
             init() {
                 this.renderFeatured();
+                this.renderFullGallery();
                 this.renderAdminGallery();
                 this.initSlider();
                 this.bindEvents();
@@ -885,10 +968,13 @@
                             });
                             this.saveToLocalStorage();
                             this.renderFeatured();
+                            this.renderFullGallery();
                             this.renderAdminGallery();
                             this.updateSlider();
                         };
                         reader.readAsDataURL(file);
+                    } else {
+                        alert(`${file.name} nuk është një imazh i vlefshëm`);
                     }
                 });
                 
@@ -900,6 +986,7 @@
                     this.images = this.images.filter(img => img.id !== id);
                     this.saveToLocalStorage();
                     this.renderFeatured();
+                    this.renderFullGallery();
                     this.renderAdminGallery();
                     this.updateSlider();
                     
@@ -918,6 +1005,7 @@
                 });
                 this.saveToLocalStorage();
                 this.renderFeatured();
+                this.renderFullGallery();
             }
 
             saveToLocalStorage() {
@@ -926,16 +1014,6 @@
 
             // Slider functions
             initSlider() {
-                const slider = document.getElementById('homeSlider');
-                if (this.images.length === 0) {
-                    slider.innerHTML = `
-                        <div class="slide active" style="background-image: url('https://via.placeholder.com/800x600/667eea/ffffff?text=GalleryApp')">
-                            <div class="slide-overlay"></div>
-                        </div>
-                    `;
-                    return;
-                }
-
                 this.renderSlider();
             }
 
@@ -1029,19 +1107,15 @@
             updateSlider() {
                 this.renderSlider();
                 this.currentSlide = 0;
-                if (this.images.length > 0) {
+                if (this.images.length > 0 && document.getElementById('heroSection').style.display !== 'none') {
                     this.startSlider();
                 }
             }
 
             // Lightbox functions
-            openLightbox(index, source = 'featured') {
+            openLightbox(index, images) {
+                this.currentLightboxImages = images;
                 this.currentLightboxIndex = index;
-                this.lightboxSource = source;
-                
-                const images = source === 'featured' ? 
-                    this.images.filter(img => img.featured) : 
-                    this.images;
                 
                 if (images.length === 0) return;
                 
@@ -1058,35 +1132,31 @@
 
             closeLightbox() {
                 document.getElementById('lightbox').classList.remove('active');
-                this.startSlider();
+                if (document.getElementById('heroSection').style.display !== 'none') {
+                    this.startSlider();
+                }
             }
 
             nextLightbox() {
-                const images = this.lightboxSource === 'featured' ? 
-                    this.images.filter(img => img.featured) : 
-                    this.images;
-                
-                this.currentLightboxIndex = (this.currentLightboxIndex + 1) % images.length;
+                this.currentLightboxIndex = (this.currentLightboxIndex + 1) % this.currentLightboxImages.length;
                 
                 const lightboxImg = document.getElementById('lightboxImage');
                 const lightboxInfo = document.getElementById('lightboxInfo');
+                const img = this.currentLightboxImages[this.currentLightboxIndex];
                 
-                lightboxImg.src = images[this.currentLightboxIndex].data;
-                lightboxInfo.textContent = `${images[this.currentLightboxIndex].name} - ${new Date(images[this.currentLightboxIndex].date).toLocaleDateString('sq-AL')}`;
+                lightboxImg.src = img.data;
+                lightboxInfo.textContent = `${img.name} - ${new Date(img.date).toLocaleDateString('sq-AL')}`;
             }
 
             prevLightbox() {
-                const images = this.lightboxSource === 'featured' ? 
-                    this.images.filter(img => img.featured) : 
-                    this.images;
-                
-                this.currentLightboxIndex = (this.currentLightboxIndex - 1 + images.length) % images.length;
+                this.currentLightboxIndex = (this.currentLightboxIndex - 1 + this.currentLightboxImages.length) % this.currentLightboxImages.length;
                 
                 const lightboxImg = document.getElementById('lightboxImage');
                 const lightboxInfo = document.getElementById('lightboxInfo');
+                const img = this.currentLightboxImages[this.currentLightboxIndex];
                 
-                lightboxImg.src = images[this.currentLightboxIndex].data;
-                lightboxInfo.textContent = `${images[this.currentLightboxIndex].name} - ${new Date(images[this.currentLightboxIndex].date).toLocaleDateString('sq-AL')}`;
+                lightboxImg.src = img.data;
+                lightboxInfo.textContent = `${img.name} - ${new Date(img.date).toLocaleDateString('sq-AL')}`;
             }
 
             // Render functions
@@ -1105,7 +1175,7 @@
                 }
 
                 container.innerHTML = featuredImages.map((img, index) => `
-                    <div class="featured-card" onclick="app.openLightbox(${index}, 'featured')">
+                    <div class="featured-card" onclick="app.openLightbox(${index}, ${JSON.stringify(featuredImages).replace(/"/g, '&quot;')})">
                         <div class="featured-image">
                             <img src="${img.data}" alt="${img.name}">
                         </div>
@@ -1119,26 +1189,30 @@
                         </div>
                     </div>
                 `).join('');
+            }
 
-                // Render full gallery
-                const fullContainer = document.getElementById('fullGallery');
-                if (fullContainer) {
-                    fullContainer.innerHTML = this.images.map((img, index) => `
-                        <div class="featured-card" onclick="app.openLightbox(${index}, 'all')">
-                            <div class="featured-image">
-                                <img src="${img.data}" alt="${img.name}">
-                            </div>
-                            <div class="featured-info">
-                                <h3>${img.name.substring(0, 30)}${img.name.length > 30 ? '...' : ''}</h3>
-                                <p>Ngarkuar: ${new Date(img.date).toLocaleDateString('sq-AL')}</p>
-                                <div class="featured-meta">
-                                    <span>${img.featured ? '⭐ Featured' : '📸 Normal'}</span>
-                                    <span>📅 ${new Date(img.date).toLocaleDateString('sq-AL')}</span>
-                                </div>
-                            </div>
+            renderFullGallery() {
+                const container = document.getElementById('fullGallery');
+                
+                if (this.images.length === 0) {
+                    container.innerHTML = `
+                        <div style="grid-column: 1/-1; text-align: center; padding: 3rem; color: #999;">
+                            <div style="font-size: 4rem; margin-bottom: 1rem;">📸</div>
+                            <p>Nuk ka asnjë foto të ngarkuar.</p>
                         </div>
-                    `).join('');
+                    `;
+                    return;
                 }
+
+                container.innerHTML = this.images.map((img, index) => `
+                    <div class="gallery-item" onclick="app.openLightbox(${index}, ${JSON.stringify(this.images).replace(/"/g, '&quot;')})">
+                        <img src="${img.data}" alt="${img.name}">
+                        <div class="gallery-item-info">
+                            <h4>${img.name.substring(0, 30)}${img.name.length > 30 ? '...' : ''}</h4>
+                            <p>📅 ${new Date(img.date).toLocaleDateString('sq-AL')} ${img.featured ? '⭐' : ''}</p>
+                        </div>
+                    </div>
+                `).join('');
             }
 
             renderAdminGallery() {
@@ -1213,6 +1287,9 @@
             document.getElementById('galleryWrapper').style.display = 'block';
             document.getElementById('aboutSection').style.display = 'none';
             app.stopSlider();
+            
+            // Rishfaq gallery-në me të gjitha fotot
+            app.renderFullGallery();
         }
 
         function showAbout() {
