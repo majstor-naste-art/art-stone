@@ -1,1 +1,15 @@
-@import "tailwindcss";
+/* src/index.css */
+@import "tailwindcss"; /* Ndrysho nga @tailwind base; @tailwind components; @tailwind utilities; */
+
+/* Stilet e tua custom */
+@layer base {
+  body {
+    @apply bg-black text-white;
+  }
+}
+
+@layer components {
+  .container {
+    @apply max-w-7xl mx-auto px-4;
+  }
+}
