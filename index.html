@@ -1,12 +1,265 @@
-<!doctype html>
-<html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>ART-STONE Gallery</title>
-  </head>
-  <body>
-    <div id="root"></div>
-    <script type="module" src="/src/main.tsx"></script>
-  </body>
+<!DOCTYPE html>
+<html lang="sq">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ART-STONE | Gallery</title>
+    <style>
+        /* CSS i rregulluar për performancë */
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: #f0f2f5; min-height: 100vh; overflow-x: hidden; }
+        
+        .header { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); padding: 1rem 2rem; box-shadow: 0 2px 20px rgba(0,0,0,0.1); position: sticky; top: 0; z-index: 100; }
+        .nav-container { max-width: 1400px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center; }
+        .logo { display: flex; align-items: center; gap: 10px; cursor: pointer; color: white; }
+        .logo-icon { font-size: 2rem; background: white; width: 50px; height: 50px; border-radius: 15px; display: flex; align-items: center; justify-content: center; transform: rotate(10deg); transition: 0.3s; }
+        .logo-text h1 { font-size: 1.8rem; font-weight: 700; }
+        
+        .menu { display: flex; gap: 1rem; align-items: center; }
+        .menu-item { color: white; text-decoration: none; font-weight: 500; padding: 0.5rem 1.2rem; border-radius: 25px; transition: 0.3s; cursor: pointer; display: flex; align-items: center; gap: 8px; }
+        .menu-item:hover, .menu-item.active { background: rgba(255,255,255,0.2); }
+
+        .admin-btn { background: #ff4757; color: white; border: none; padding: 0.5rem 1.5rem; border-radius: 25px; cursor: pointer; font-weight: 600; transition: 0.3s; }
+        .admin-btn.logout { background: #333; }
+
+        .main-container { max-width: 1400px; margin: 2rem auto; padding: 0 2rem; }
+        
+        /* Hero & Slider */
+        .hero-section { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border-radius: 30px; padding: 3rem; margin-bottom: 3rem; color: white; display: flex; align-items: center; min-height: 400px; position: relative; overflow: hidden; }
+        .hero-content { flex: 1; z-index: 2; }
+        .slider-container { flex: 1; height: 350px; position: relative; border-radius: 20px; overflow: hidden; box-shadow: 0 10px 30px rgba(0,0,0,0.2); }
+        .slide { position: absolute; width: 100%; height: 100%; opacity: 0; transition: 1s; background-size: cover; background-position: center; }
+        .slide.active { opacity: 1; }
+
+        /* Gallery Grid */
+        .section-title { text-align: center; margin-bottom: 2rem; }
+        .gallery-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 2rem; }
+        .gallery-item { background: white; border-radius: 20px; overflow: hidden; box-shadow: 0 10px 20px rgba(0,0,0,0.05); transition: 0.3s; cursor: pointer; }
+        .gallery-item:hover { transform: translateY(-10px); }
+        .gallery-item img { width: 100%; height: 250px; object-fit: cover; }
+        .gallery-info { padding: 1.5rem; }
+
+        /* Admin Panel */
+        .admin-panel { display: none; background: white; border-radius: 30px; padding: 2rem; margin-bottom: 2rem; }
+        .admin-panel.active { display: block; }
+        .upload-area { border: 3px dashed #667eea; padding: 3rem; text-align: center; border-radius: 20px; cursor: pointer; margin-bottom: 2rem; }
+
+        /* Modals */
+        .login-modal, .lightbox { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.9); z-index: 2000; justify-content: center; align-items: center; }
+        .login-modal.active, .lightbox.active { display: flex; }
+        .login-container { background: white; padding: 2rem; border-radius: 20px; width: 100%; max-width: 400px; position: relative; }
+        
+        .lightbox-content img { max-width: 90vw; max-height: 80vh; border-radius: 10px; }
+        .close-btn { position: absolute; top: 20px; right: 20px; color: white; font-size: 2rem; cursor: pointer; }
+
+        @media (max-width: 768px) {
+            .hero-section { flex-direction: column; text-align: center; padding: 1.5rem; }
+            .slider-container { width: 100%; height: 200px; margin-top: 1rem; }
+        }
+    </style>
+</head>
+<body>
+
+<header class="header">
+    <nav class="nav-container">
+        <div class="logo" onclick="showHome()">
+            <div class="logo-icon">📸</div>
+            <div class="logo-text"><h1>ART-STONE</h1></div>
+        </div>
+        <div class="menu">
+            <div class="menu-item active" onclick="showHome()">Ballina</div>
+            <div class="menu-item" onclick="showGallery()">Gallery</div>
+            <button class="admin-btn" id="adminBtn" onclick="handleAdminClick()">Admin</button>
+        </div>
+    </nav>
+</header>
+
+<div class="main-container">
+    <div id="homePage">
+        <div class="hero-section">
+            <div class="hero-content">
+                <h2>Mirë se vini në ART-STONE</h2>
+                <p>Eksploroni botën përmes fotografive tona unike.</p>
+                <button class="admin-btn" style="background:white; color:#667eea; margin-top:1rem;" onclick="showGallery()">Shiko Galerinë</button>
+            </div>
+            <div class="slider-container" id="mainSlider">
+                </div>
+        </div>
+
+        <div class="section-title"><h2>Imazhet e Fundit</h2></div>
+        <div class="gallery-grid" id="featuredGrid"></div>
+    </div>
+
+    <div id="galleryPage" style="display:none;">
+        <div class="section-title"><h2>E gjithë Galeria</h2></div>
+        <div class="gallery-grid" id="fullGrid"></div>
+    </div>
+
+    <div id="adminPanel" class="admin-panel">
+        <div class="section-title"><h2>Admin Panel</h2></div>
+        <div class="upload-area" onclick="document.getElementById('fileInput').click()">
+            <div style="font-size: 3rem;">📤</div>
+            <p>Klikoni për të ngarkuar foto</p>
+            <input type="file" id="fileInput" hidden accept="image/*" multiple onchange="app.handleUpload(event)">
+        </div>
+        <div class="gallery-grid" id="adminGrid"></div>
+    </div>
+</div>
+
+<div class="login-modal" id="loginModal">
+    <div class="login-container">
+        <h3>Admin Login</h3>
+        <input type="text" id="user" placeholder="User: admin" style="width:100%; padding:10px; margin:10px 0;">
+        <input type="password" id="pass" placeholder="Pass: admin123" style="width:100%; padding:10px; margin:10px 0;">
+        <button class="admin-btn" style="width:100%" onclick="login()">Hyni</button>
+        <button class="admin-btn logout" style="width:100%; margin-top:5px;" onclick="closeModal()">Mbyll</button>
+    </div>
+</div>
+
+<div class="lightbox" id="lightbox" onclick="this.classList.remove('active')">
+    <span class="close-btn">&times;</span>
+    <div class="lightbox-content">
+        <img id="lbImg" src="">
+    </div>
+</div>
+
+<script>
+    class GalleryApp {
+        constructor() {
+            this.images = JSON.parse(localStorage.getItem('artStoneImages')) || [];
+            this.isLoggedIn = sessionStorage.getItem('isAdmin') === 'true';
+            this.init();
+        }
+
+        init() {
+            this.render();
+            if(this.isLoggedIn) {
+                document.getElementById('adminBtn').innerText = "Logout";
+                document.getElementById('adminBtn').classList.add('logout');
+            }
+        }
+
+        handleUpload(e) {
+            const files = e.target.files;
+            Array.from(files).forEach(file => {
+                const reader = new FileReader();
+                reader.onload = (event) => {
+                    this.images.push({
+                        id: Date.now() + Math.random(),
+                        src: event.target.result,
+                        date: new Date().toLocaleDateString()
+                    });
+                    this.save();
+                    this.render();
+                };
+                reader.readAsDataURL(file);
+            });
+        }
+
+        deleteImg(id) {
+            this.images = this.images.filter(img => img.id !== id);
+            this.save();
+            this.render();
+        }
+
+        save() {
+            localStorage.setItem('artStoneImages', JSON.stringify(this.images));
+        }
+
+        render() {
+            const featured = document.getElementById('featuredGrid');
+            const full = document.getElementById('fullGrid');
+            const admin = document.getElementById('adminGrid');
+            const slider = document.getElementById('mainSlider');
+
+            [featured, full, admin, slider].forEach(el => el.innerHTML = '');
+
+            this.images.forEach((img, index) => {
+                const card = `
+                    <div class="gallery-item" onclick="app.openLB('${img.src}')">
+                        <img src="${img.src}">
+                        <div class="gallery-info">
+                            <small>${img.date}</small>
+                            ${this.isLoggedIn ? `<button onclick="event.stopPropagation(); app.deleteImg(${img.id})" style="color:red; float:right; border:none; background:none; cursor:pointer;">Fshij</button>` : ''}
+                        </div>
+                    </div>`;
+                
+                full.innerHTML += card;
+                if(index < 3) featured.innerHTML += card;
+                if(this.isLoggedIn) admin.innerHTML += card;
+
+                // Slider
+                const slide = document.createElement('div');
+                slide.className = `slide ${index === 0 ? 'active' : ''}`;
+                slide.style.backgroundImage = `url(${img.src})`;
+                slider.appendChild(slide);
+            });
+
+            this.startSlider();
+        }
+
+        startSlider() {
+            let current = 0;
+            const slides = document.querySelectorAll('.slide');
+            if(slides.length < 2) return;
+            
+            clearInterval(this.slideInterval);
+            this.slideInterval = setInterval(() => {
+                slides[current].classList.remove('active');
+                current = (current + 1) % slides.length;
+                slides[current].classList.add('active');
+            }, 3000);
+        }
+
+        openLB(src) {
+            document.getElementById('lbImg').src = src;
+            document.getElementById('lightbox').classList.add('active');
+        }
+    }
+
+    const app = new GalleryApp();
+
+    function showHome() {
+        document.getElementById('homePage').style.display = 'block';
+        document.getElementById('galleryPage').style.display = 'none';
+        document.getElementById('adminPanel').style.display = 'none';
+    }
+
+    function showGallery() {
+        document.getElementById('homePage').style.display = 'none';
+        document.getElementById('galleryPage').style.display = 'block';
+        document.getElementById('adminPanel').style.display = 'none';
+    }
+
+    function handleAdminClick() {
+        if(app.isLoggedIn) {
+            sessionStorage.removeItem('isAdmin');
+            location.reload();
+        } else {
+            document.getElementById('loginModal').classList.add('active');
+        }
+    }
+
+    function login() {
+        const u = document.getElementById('user').value;
+        const p = document.getElementById('pass').value;
+        if(u === 'admin' && p === 'admin123') {
+            sessionStorage.setItem('isAdmin', 'true');
+            location.reload();
+        } else {
+            alert("Gabim!");
+        }
+    }
+
+    function closeModal() {
+        document.getElementById('loginModal').classList.remove('active');
+    }
+
+    // Shfaq admin panel nese eshte i loguar
+    if(app.isLoggedIn) {
+        document.getElementById('adminPanel').style.display = 'block';
+    }
+</script>
+
+</body>
 </html>
