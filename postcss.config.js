@@ -1,7 +1,6 @@
-// postcss.config.js
-export default {
+module.exports = {
   plugins: {
-    tailwindcss: {}, // Kthehu te konfigurimi i vjetër
+    tailwindcss: {},
     autoprefixer: {},
-  }
-}
+  },
+};
