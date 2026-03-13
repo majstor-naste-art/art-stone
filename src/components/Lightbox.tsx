@@ -1,144 +1,206 @@
-import { useEffect, useCallback } from 'react';
-import { GalleryImage } from '../types';
+import React, { useEffect, useCallback } from 'react';
 
-interface LightboxProps {
-  images: GalleryImage[];
-  currentIndex: number;
-  isOpen: boolean;
-  onClose: () => void;
-  onPrev: () => void;
-  onNext: () => void;
+interface GalleryImage {
+  id: number;
+  name: string;
+  data: string;
+  date: string;
+  featured?: boolean;
 }
 
-export function Lightbox({
+interface LightboxProps {
+  isOpen: boolean;
+  images: GalleryImage[];
+  currentIndex: number;
+  onClose: () => void;
+  onNext: () => void;
+  onPrev: () => void;
+}
+
+const Lightbox: React.FC<LightboxProps> = ({
+  isOpen,
   images,
   currentIndex,
-  isOpen,
   onClose,
-  onPrev,
   onNext,
-}: LightboxProps) {
+  onPrev,
+}) => {
   const handleKeyDown = useCallback(
     (e: KeyboardEvent) => {
       if (!isOpen) return;
-      if (e.key === 'Escape') onClose();
-      if (e.key === 'ArrowLeft') onPrev();
-      if (e.key === 'ArrowRight') onNext();
+      
+      switch (e.key) {
+        case 'Escape':
+          onClose();
+          break;
+        case 'ArrowLeft':
+          onPrev();
+          break;
+        case 'ArrowRight':
+          onNext();
+          break;
+      }
     },
-    [isOpen, onClose, onPrev, onNext]
+    [isOpen, onClose, onNext, onPrev]
   );
 
   useEffect(() => {
     document.addEventListener('keydown', handleKeyDown);
-    return () => document.removeEventListener('keydown', handleKeyDown);
-  }, [handleKeyDown]);
-
-  useEffect(() => {
+    
     if (isOpen) {
       document.body.style.overflow = 'hidden';
-    } else {
-      document.body.style.overflow = '';
     }
+    
     return () => {
+      document.removeEventListener('keydown', handleKeyDown);
       document.body.style.overflow = '';
     };
-  }, [isOpen]);
+  }, [handleKeyDown, isOpen]);
 
   if (!isOpen || images.length === 0) return null;
 
   const currentImage = images[currentIndex];
 
   return (
-    <div className="fixed inset-0 z-[200] flex items-center justify-center">
+    <div className="fixed inset-0 z-[100] flex items-center justify-center">
       {/* Backdrop */}
       <div
-        className="absolute inset-0 bg-black/95 backdrop-blur-xl"
+        className="absolute inset-0 bg-black/95 backdrop-blur-sm"
         onClick={onClose}
       />
 
-      {/* Close Button */}
+      {/* Close button */}
       <button
         onClick={onClose}
-        className="absolute top-6 right-6 z-10 w-14 h-14 rounded-full glass flex items-center justify-center text-2xl hover:bg-white/20 transition-all duration-300 hover:rotate-90"
+        className="absolute top-6 right-6 z-10 w-14 h-14 rounded-full bg-stone-800/80 border border-stone-700 text-white hover:bg-red-500 hover:border-red-500 transition-all duration-300 flex items-center justify-center group"
       >
-        ✕
+        <svg 
+          className="w-6 h-6 transform group-hover:rotate-90 transition-transform duration-300" 
+          fill="none" 
+          stroke="currentColor" 
+          viewBox="0 0 24 24"
+        >
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+        </svg>
       </button>
 
-      {/* Navigation */}
-      {images.length > 1 && (
-        <>
-          <button
-            onClick={onPrev}
-            className="absolute left-4 md:left-8 z-10 w-14 h-14 rounded-full glass flex items-center justify-center text-2xl hover:bg-white/20 transition-all duration-300 hover:scale-110"
-          >
-            ←
-          </button>
-          <button
-            onClick={onNext}
-            className="absolute right-4 md:right-8 z-10 w-14 h-14 rounded-full glass flex items-center justify-center text-2xl hover:bg-white/20 transition-all duration-300 hover:scale-110"
-          >
-            →
-          </button>
-        </>
-      )}
+      {/* Navigation - Previous */}
+      <button
+        onClick={onPrev}
+        className="absolute left-4 md:left-8 top-1/2 -translate-y-1/2 z-10 w-14 h-14 rounded-full bg-stone-800/80 border border-stone-700 text-white hover:bg-amber-500 hover:border-amber-500 hover:text-stone-900 transition-all duration-300 flex items-center justify-center group"
+      >
+        <svg 
+          className="w-6 h-6 transform group-hover:-translate-x-1 transition-transform duration-300" 
+          fill="none" 
+          stroke="currentColor" 
+          viewBox="0 0 24 24"
+        >
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+        </svg>
+      </button>
 
-      {/* Image */}
-      <div className="relative z-10 max-w-[90vw] max-h-[85vh] animate-in zoom-in duration-300">
+      {/* Navigation - Next */}
+      <button
+        onClick={onNext}
+        className="absolute right-4 md:right-8 top-1/2 -translate-y-1/2 z-10 w-14 h-14 rounded-full bg-stone-800/80 border border-stone-700 text-white hover:bg-amber-500 hover:border-amber-500 hover:text-stone-900 transition-all duration-300 flex items-center justify-center group"
+      >
+        <svg 
+          className="w-6 h-6 transform group-hover:translate-x-1 transition-transform duration-300" 
+          fill="none" 
+          stroke="currentColor" 
+          viewBox="0 0 24 24"
+        >
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+        </svg>
+      </button>
+
+      {/* Image Container */}
+      <div className="relative max-w-5xl max-h-[85vh] mx-4 animate-reveal">
         <img
           src={currentImage.data}
           alt={currentImage.name}
-          className="max-w-full max-h-[80vh] object-contain rounded-2xl shadow-2xl"
+          className="max-w-full max-h-[75vh] object-contain rounded-xl shadow-2xl"
         />
-
-        {/* Info */}
-        <div className="absolute -bottom-20 left-0 right-0 text-center">
-          <div className="inline-flex items-center gap-4 glass-dark px-6 py-3 rounded-full">
-            <span className="font-medium">{currentImage.name}</span>
-            <span className="text-gray-400">|</span>
-            <span className="text-gray-400 text-sm">
-              {new Date(currentImage.date).toLocaleDateString('sq-AL')}
-            </span>
-            {currentImage.featured && (
-              <>
-                <span className="text-gray-400">|</span>
-                <span className="text-amber-400">⭐ Featured</span>
-              </>
-            )}
+        
+        {/* Info Bar */}
+        <div className="absolute -bottom-20 left-0 right-0 flex flex-col md:flex-row justify-between items-center gap-4 px-4">
+          <div className="text-center md:text-left">
+            <h3 className="text-white text-lg font-medium mb-1" style={{ fontFamily: 'Cinzel, serif' }}>
+              {currentImage.name.replace(/\.[^/.]+$/, '')}
+            </h3>
+            <p className="text-stone-400 text-sm flex items-center gap-2 justify-center md:justify-start">
+              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+              </svg>
+              {new Date(currentImage.date).toLocaleDateString('sq-AL', {
+                year: 'numeric',
+                month: 'long',
+                day: 'numeric',
+              })}
+              {currentImage.featured && (
+                <span className="ml-2 px-2 py-0.5 rounded-full bg-amber-500/20 text-amber-400 text-xs">
+                  ⭐ Featured
+                </span>
+              )}
+            </p>
           </div>
-        </div>
 
-        {/* Counter */}
-        <div className="absolute -top-14 left-1/2 -translate-x-1/2">
-          <div className="glass-dark px-4 py-2 rounded-full text-sm">
-            {currentIndex + 1} / {images.length}
+          {/* Pagination */}
+          <div className="flex items-center gap-4">
+            <span className="text-stone-400 text-sm">
+              {currentIndex + 1} / {images.length}
+            </span>
+            <div className="flex gap-1">
+              {images.slice(
+                Math.max(0, currentIndex - 3),
+                Math.min(images.length, currentIndex + 4)
+              ).map((img, idx) => {
+                const actualIndex = Math.max(0, currentIndex - 3) + idx;
+                return (
+                  <div
+                    key={img.id}
+                    className={`w-2 h-2 rounded-full transition-all duration-300 ${
+                      actualIndex === currentIndex
+                        ? 'bg-amber-400 w-4'
+                        : 'bg-stone-600'
+                    }`}
+                  />
+                );
+              })}
+            </div>
           </div>
         </div>
       </div>
 
       {/* Thumbnails */}
-      {images.length > 1 && (
-        <div className="absolute bottom-6 left-1/2 -translate-x-1/2 flex gap-2 max-w-[80vw] overflow-x-auto pb-2 px-4">
-          {images.slice(0, 10).map((img, index) => (
-            <button
-              key={img.id}
-              onClick={() => {
-                // This would need to be handled by parent
-              }}
-              className={`w-12 h-12 rounded-lg overflow-hidden flex-shrink-0 transition-all duration-300 ${
-                index === currentIndex
-                  ? 'ring-2 ring-violet-500 scale-110'
-                  : 'opacity-50 hover:opacity-100'
-              }`}
-            >
-              <img
-                src={img.data}
-                alt={img.name}
-                className="w-full h-full object-cover"
-              />
-            </button>
-          ))}
-        </div>
-      )}
+      <div className="absolute bottom-6 left-1/2 -translate-x-1/2 flex gap-2 max-w-lg overflow-x-auto px-4 scrollbar-hide">
+        {images.map((img, idx) => (
+          <button
+            key={img.id}
+            onClick={() => {
+              const diff = idx - currentIndex;
+              if (diff > 0) {
+                for (let i = 0; i < diff; i++) onNext();
+              } else {
+                for (let i = 0; i < Math.abs(diff); i++) onPrev();
+              }
+            }}
+            className={`flex-shrink-0 w-16 h-16 rounded-lg overflow-hidden border-2 transition-all duration-300 ${
+              idx === currentIndex
+                ? 'border-amber-500 scale-110'
+                : 'border-transparent opacity-50 hover:opacity-100'
+            }`}
+          >
+            <img
+              src={img.data}
+              alt={img.name}
+              className="w-full h-full object-cover"
+            />
+          </button>
+        ))}
+      </div>
     </div>
   );
-}
+};
+
+export default Lightbox;

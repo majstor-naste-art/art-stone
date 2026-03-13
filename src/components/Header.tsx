@@ -1,173 +1,232 @@
-import { useState } from 'react';
-import { Page } from '../types';
+import React, { useState, useEffect } from 'react';
+import Logo from './Logo';
 
 interface HeaderProps {
-  currentPage: Page;
-  setCurrentPage: (page: Page) => void;
+  currentPage: string;
+  setCurrentPage: (page: string) => void;
   isLoggedIn: boolean;
   onLoginClick: () => void;
-  onLogoutClick: () => void;
-  onAdminClick: () => void;
+  onLogout: () => void;
 }
 
-export function Header({
+const Header: React.FC<HeaderProps> = ({
   currentPage,
   setCurrentPage,
   isLoggedIn,
   onLoginClick,
-  onLogoutClick,
-  onAdminClick,
-}: HeaderProps) {
-  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  onLogout,
+}) => {
+  const [isScrolled, setIsScrolled] = useState(false);
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
-  const navItems: { id: Page; label: string; icon: string }[] = [
-    { id: 'home', label: 'Ballina', icon: '🏠' },
+  useEffect(() => {
+    const handleScroll = () => {
+      setIsScrolled(window.scrollY > 50);
+    };
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
+
+  const menuItems = [
+    { id: 'home', label: 'Ballina', icon: '🏛️' },
     { id: 'gallery', label: 'Galeria', icon: '🖼️' },
-    { id: 'about', label: 'Rreth nesh', icon: 'ℹ️' },
+    { id: 'about', label: 'Rreth Nesh', icon: '✨' },
   ];
 
   return (
-    <header className="fixed top-0 left-0 right-0 z-50 glass-dark">
+    <header
+      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 ${
+        isScrolled
+          ? 'py-3 glass-dark shadow-2xl shadow-black/50'
+          : 'py-5 bg-transparent'
+      }`}
+    >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex items-center justify-between h-20">
+        <nav className="flex items-center justify-between">
           {/* Logo */}
-          <div
-            className="flex items-center gap-3 cursor-pointer group"
+          <button
             onClick={() => setCurrentPage('home')}
+            className="focus:outline-none transform hover:scale-105 transition-transform duration-300"
           >
-            <div className="relative">
-              <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-violet-500 to-pink-500 flex items-center justify-center text-2xl transform group-hover:scale-110 group-hover:rotate-6 transition-all duration-300 shadow-lg">
-                💎
-              </div>
-              <div className="absolute inset-0 rounded-xl bg-gradient-to-br from-violet-500 to-pink-500 blur-lg opacity-50 group-hover:opacity-75 transition-opacity" />
-            </div>
-            <div>
-              <h1 className="text-2xl font-bold gradient-text font-display tracking-wide">
-                ART-STONE
-              </h1>
-              <p className="text-xs text-gray-400">Premium Gallery</p>
-            </div>
-          </div>
+            <Logo size={isScrolled ? 'sm' : 'md'} />
+          </button>
 
-          {/* Desktop Navigation */}
-          <nav className="hidden md:flex items-center gap-2">
-            {navItems.map((item) => (
+          {/* Desktop Menu */}
+          <div className="hidden md:flex items-center gap-2">
+            {menuItems.map((item) => (
               <button
                 key={item.id}
                 onClick={() => setCurrentPage(item.id)}
-                className={`px-5 py-2.5 rounded-full font-medium transition-all duration-300 flex items-center gap-2 ${
+                className={`relative px-5 py-2.5 rounded-full font-medium transition-all duration-300 group ${
                   currentPage === item.id
-                    ? 'bg-gradient-to-r from-violet-500 to-pink-500 text-white shadow-lg'
-                    : 'text-gray-300 hover:text-white hover:bg-white/10'
+                    ? 'text-amber-400'
+                    : 'text-stone-300 hover:text-amber-400'
                 }`}
               >
-                <span>{item.icon}</span>
-                {item.label}
+                {/* Background */}
+                <span
+                  className={`absolute inset-0 rounded-full transition-all duration-300 ${
+                    currentPage === item.id
+                      ? 'bg-amber-500/10 border border-amber-500/30'
+                      : 'bg-transparent group-hover:bg-amber-500/5'
+                  }`}
+                />
+                
+                {/* Content */}
+                <span className="relative flex items-center gap-2">
+                  <span className="text-sm">{item.icon}</span>
+                  <span style={{ fontFamily: 'Cinzel, serif' }}>{item.label}</span>
+                </span>
+
+                {/* Active indicator */}
+                {currentPage === item.id && (
+                  <span className="absolute -bottom-1 left-1/2 transform -translate-x-1/2 w-1 h-1 bg-amber-400 rounded-full" />
+                )}
               </button>
             ))}
 
-            <div className="w-px h-8 bg-white/20 mx-2" />
+            {/* Divider */}
+            <div className="w-px h-8 bg-gradient-to-b from-transparent via-amber-500/30 to-transparent mx-2" />
+
+            {/* Admin Button */}
+            {isLoggedIn ? (
+              <div className="flex items-center gap-2">
+                <button
+                  onClick={() => setCurrentPage('admin')}
+                  className={`px-5 py-2.5 rounded-full font-medium transition-all duration-300 ${
+                    currentPage === 'admin'
+                      ? 'bg-amber-500/20 text-amber-400 border border-amber-500/30'
+                      : 'text-amber-400 hover:bg-amber-500/10'
+                  }`}
+                  style={{ fontFamily: 'Cinzel, serif' }}
+                >
+                  <span className="flex items-center gap-2">
+                    <span>👑</span>
+                    <span>Admin</span>
+                  </span>
+                </button>
+                <button
+                  onClick={onLogout}
+                  className="px-4 py-2.5 rounded-full bg-red-500/10 text-red-400 border border-red-500/20 hover:bg-red-500/20 transition-all duration-300"
+                >
+                  <span className="flex items-center gap-2">
+                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
+                    </svg>
+                    <span className="hidden lg:inline">Dil</span>
+                  </span>
+                </button>
+              </div>
+            ) : (
+              <button
+                onClick={onLoginClick}
+                className="btn-gold px-6 py-2.5 rounded-full text-stone-900 font-semibold shadow-lg"
+                style={{ fontFamily: 'Cinzel, serif' }}
+              >
+                <span className="flex items-center gap-2">
+                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+                  </svg>
+                  <span>Admin</span>
+                </span>
+              </button>
+            )}
+          </div>
+
+          {/* Mobile Menu Button */}
+          <button
+            onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+            className="md:hidden w-12 h-12 flex items-center justify-center rounded-xl bg-stone-800/50 border border-amber-500/20 text-amber-400"
+          >
+            <svg
+              className={`w-6 h-6 transition-transform duration-300 ${isMobileMenuOpen ? 'rotate-90' : ''}`}
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              {isMobileMenuOpen ? (
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+              ) : (
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
+              )}
+            </svg>
+          </button>
+        </nav>
+
+        {/* Mobile Menu */}
+        <div
+          className={`md:hidden transition-all duration-500 overflow-hidden ${
+            isMobileMenuOpen ? 'max-h-96 opacity-100 mt-4' : 'max-h-0 opacity-0'
+          }`}
+        >
+          <div className="glass-dark rounded-2xl p-4 space-y-2">
+            {menuItems.map((item) => (
+              <button
+                key={item.id}
+                onClick={() => {
+                  setCurrentPage(item.id);
+                  setIsMobileMenuOpen(false);
+                }}
+                className={`w-full px-4 py-3 rounded-xl font-medium transition-all duration-300 flex items-center gap-3 ${
+                  currentPage === item.id
+                    ? 'bg-amber-500/20 text-amber-400 border border-amber-500/30'
+                    : 'text-stone-300 hover:bg-stone-800/50'
+                }`}
+                style={{ fontFamily: 'Cinzel, serif' }}
+              >
+                <span className="text-xl">{item.icon}</span>
+                <span>{item.label}</span>
+              </button>
+            ))}
+
+            <div className="h-px bg-gradient-to-r from-transparent via-amber-500/30 to-transparent my-2" />
 
             {isLoggedIn ? (
               <>
                 <button
-                  onClick={onAdminClick}
-                  className="px-5 py-2.5 rounded-full font-medium bg-gradient-to-r from-amber-500 to-orange-500 text-white hover:shadow-lg hover:shadow-orange-500/25 transition-all duration-300 flex items-center gap-2"
+                  onClick={() => {
+                    setCurrentPage('admin');
+                    setIsMobileMenuOpen(false);
+                  }}
+                  className="w-full px-4 py-3 rounded-xl bg-amber-500/10 text-amber-400 border border-amber-500/20 font-medium flex items-center gap-3"
+                  style={{ fontFamily: 'Cinzel, serif' }}
                 >
-                  <span>⚙️</span>
-                  Admin
+                  <span>👑</span>
+                  <span>Admin Panel</span>
                 </button>
                 <button
-                  onClick={onLogoutClick}
-                  className="px-5 py-2.5 rounded-full font-medium bg-gray-800 text-gray-300 hover:bg-gray-700 hover:text-white transition-all duration-300 flex items-center gap-2"
+                  onClick={() => {
+                    onLogout();
+                    setIsMobileMenuOpen(false);
+                  }}
+                  className="w-full px-4 py-3 rounded-xl bg-red-500/10 text-red-400 border border-red-500/20 font-medium flex items-center gap-3"
                 >
-                  <span>🚪</span>
-                  Dilni
+                  <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
+                  </svg>
+                  <span>Dil</span>
                 </button>
               </>
             ) : (
               <button
-                onClick={onLoginClick}
-                className="px-5 py-2.5 rounded-full font-medium bg-gradient-to-r from-violet-500 to-pink-500 text-white hover:shadow-lg hover:shadow-violet-500/25 transition-all duration-300 flex items-center gap-2"
+                onClick={() => {
+                  onLoginClick();
+                  setIsMobileMenuOpen(false);
+                }}
+                className="w-full btn-gold px-4 py-3 rounded-xl text-stone-900 font-semibold flex items-center justify-center gap-2"
+                style={{ fontFamily: 'Cinzel, serif' }}
               >
-                <span>👨‍💼</span>
-                Admin
+                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+                </svg>
+                <span>Hyr si Admin</span>
               </button>
             )}
-          </nav>
-
-          {/* Mobile Menu Button */}
-          <button
-            className="md:hidden text-2xl text-white p-2"
-            onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-          >
-            {mobileMenuOpen ? '✕' : '☰'}
-          </button>
+          </div>
         </div>
-
-        {/* Mobile Navigation */}
-        {mobileMenuOpen && (
-          <nav className="md:hidden py-4 border-t border-white/10">
-            <div className="flex flex-col gap-2">
-              {navItems.map((item) => (
-                <button
-                  key={item.id}
-                  onClick={() => {
-                    setCurrentPage(item.id);
-                    setMobileMenuOpen(false);
-                  }}
-                  className={`px-5 py-3 rounded-xl font-medium transition-all duration-300 flex items-center gap-3 ${
-                    currentPage === item.id
-                      ? 'bg-gradient-to-r from-violet-500 to-pink-500 text-white'
-                      : 'text-gray-300 hover:bg-white/10'
-                  }`}
-                >
-                  <span className="text-xl">{item.icon}</span>
-                  {item.label}
-                </button>
-              ))}
-
-              <div className="h-px bg-white/10 my-2" />
-
-              {isLoggedIn ? (
-                <>
-                  <button
-                    onClick={() => {
-                      onAdminClick();
-                      setMobileMenuOpen(false);
-                    }}
-                    className="px-5 py-3 rounded-xl font-medium bg-gradient-to-r from-amber-500 to-orange-500 text-white flex items-center gap-3"
-                  >
-                    <span className="text-xl">⚙️</span>
-                    Admin Panel
-                  </button>
-                  <button
-                    onClick={() => {
-                      onLogoutClick();
-                      setMobileMenuOpen(false);
-                    }}
-                    className="px-5 py-3 rounded-xl font-medium bg-gray-800 text-gray-300 flex items-center gap-3"
-                  >
-                    <span className="text-xl">🚪</span>
-                    Dilni
-                  </button>
-                </>
-              ) : (
-                <button
-                  onClick={() => {
-                    onLoginClick();
-                    setMobileMenuOpen(false);
-                  }}
-                  className="px-5 py-3 rounded-xl font-medium bg-gradient-to-r from-violet-500 to-pink-500 text-white flex items-center gap-3"
-                >
-                  <span className="text-xl">👨‍💼</span>
-                  Admin Login
-                </button>
-              )}
-            </div>
-          </nav>
-        )}
       </div>
     </header>
   );
-}
+};
+
+export default Header;

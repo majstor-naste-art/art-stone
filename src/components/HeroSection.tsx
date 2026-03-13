@@ -1,178 +1,204 @@
-import { useState, useEffect, useCallback } from 'react';
-import { GalleryImage } from '../types';
+import React, { useState, useEffect } from 'react';
+import Logo from './Logo';
+
+interface GalleryImage {
+  id: number;
+  name: string;
+  data: string;
+  date: string;
+  featured?: boolean;
+}
 
 interface HeroSectionProps {
   images: GalleryImage[];
-  onExploreClick: () => void;
+  onExplore: () => void;
 }
 
-export function HeroSection({ images, onExploreClick }: HeroSectionProps) {
+const HeroSection: React.FC<HeroSectionProps> = ({ images, onExplore }) => {
   const [currentSlide, setCurrentSlide] = useState(0);
-  const sliderImages = images.slice(0, 10);
-
-  const nextSlide = useCallback(() => {
-    if (sliderImages.length > 0) {
-      setCurrentSlide((prev) => (prev + 1) % sliderImages.length);
-    }
-  }, [sliderImages.length]);
-
-  const prevSlide = useCallback(() => {
-    if (sliderImages.length > 0) {
-      setCurrentSlide((prev) => (prev - 1 + sliderImages.length) % sliderImages.length);
-    }
-  }, [sliderImages.length]);
+  const sliderImages = images.slice(0, 5);
 
   useEffect(() => {
     if (sliderImages.length === 0) return;
-    const interval = setInterval(nextSlide, 5000);
+    
+    const interval = setInterval(() => {
+      setCurrentSlide((prev) => (prev + 1) % sliderImages.length);
+    }, 5000);
+
     return () => clearInterval(interval);
-  }, [sliderImages.length, nextSlide]);
+  }, [sliderImages.length]);
 
   return (
-    <section className="relative min-h-[90vh] flex items-center overflow-hidden">
-      {/* Animated Background */}
+    <section className="relative min-h-screen flex items-center overflow-hidden">
+      {/* Background Slider */}
       <div className="absolute inset-0">
-        <div className="absolute top-20 left-10 w-72 h-72 bg-violet-500/20 rounded-full blur-3xl animate-pulse" />
-        <div className="absolute bottom-20 right-10 w-96 h-96 bg-pink-500/20 rounded-full blur-3xl animate-pulse delay-1000" />
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] bg-gradient-to-br from-violet-500/10 to-pink-500/10 rounded-full blur-3xl" />
+        {sliderImages.length > 0 ? (
+          sliderImages.map((img, index) => (
+            <div
+              key={img.id}
+              className={`absolute inset-0 transition-opacity duration-1000 ${
+                index === currentSlide ? 'opacity-100' : 'opacity-0'
+              }`}
+            >
+              <img
+                src={img.data}
+                alt={img.name}
+                className="w-full h-full object-cover"
+              />
+            </div>
+          ))
+        ) : (
+          <div className="absolute inset-0 bg-gradient-to-br from-stone-900 via-stone-800 to-stone-900" />
+        )}
+        
+        {/* Overlay */}
+        <div className="absolute inset-0 bg-gradient-to-r from-black/90 via-black/70 to-black/50" />
+        <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-black/30" />
+        
+        {/* Decorative elements */}
+        <div className="absolute top-20 left-10 w-64 h-64 bg-amber-500/10 rounded-full blur-3xl" />
+        <div className="absolute bottom-20 right-10 w-96 h-96 bg-amber-600/10 rounded-full blur-3xl" />
       </div>
 
-      <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20 w-full">
+      {/* Content */}
+      <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-32 lg:py-40">
         <div className="grid lg:grid-cols-2 gap-12 items-center">
-          {/* Hero Content */}
-          <div className="text-center lg:text-left">
-            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full glass mb-6">
-              <span className="w-2 h-2 rounded-full bg-green-400 animate-pulse" />
-              <span className="text-sm text-gray-300">Premium Collection</span>
+          {/* Left Content */}
+          <div className="space-y-8 animate-reveal">
+            {/* Badge */}
+            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full glass-gold">
+              <span className="w-2 h-2 bg-amber-400 rounded-full animate-pulse" />
+              <span className="text-amber-400 text-sm font-medium tracking-wider uppercase">
+                Premium Stone Art Gallery
+              </span>
             </div>
 
-            <h1 className="text-5xl sm:text-6xl lg:text-7xl font-bold font-display mb-6 leading-tight">
-              <span className="gradient-text">Art-Stone</span>
-              <br />
-              <span className="text-white">Gallery</span>
+            {/* Heading */}
+            <h1 className="space-y-2">
+              <span className="block text-5xl sm:text-6xl lg:text-7xl font-bold text-white leading-tight" style={{ fontFamily: 'Cinzel, serif' }}>
+                Arti i
+              </span>
+              <span className="block text-5xl sm:text-6xl lg:text-7xl font-bold text-gold-gradient leading-tight" style={{ fontFamily: 'Cinzel, serif' }}>
+                Përjetshëm
+              </span>
+              <span className="block text-5xl sm:text-6xl lg:text-7xl font-bold text-white leading-tight" style={{ fontFamily: 'Cinzel, serif' }}>
+                në Gur
+              </span>
             </h1>
 
-            <p className="text-xl text-gray-400 mb-8 max-w-xl mx-auto lg:mx-0 leading-relaxed">
-              Zbuloni koleksionin tonë premium të imazheve artistike. 
-              Një galeri moderne për të apasionuarit pas artit dhe fotografisë.
+            {/* Description */}
+            <p className="text-lg text-stone-300 max-w-xl leading-relaxed font-light" style={{ fontFamily: 'Cormorant Garamond, serif' }}>
+              Zbuloni koleksionin tonë ekskluziv të punimeve artistike në gur. 
+              Çdo vepër është një dëshmi e përjetshme e artizanatit të rafinuar dhe bukurisë natyrore.
             </p>
 
-            <div className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start">
+            {/* CTA Buttons */}
+            <div className="flex flex-wrap gap-4">
               <button
-                onClick={onExploreClick}
-                className="group px-8 py-4 bg-gradient-to-r from-violet-500 to-pink-500 rounded-full font-semibold text-lg hover:shadow-2xl hover:shadow-violet-500/25 transition-all duration-300 flex items-center justify-center gap-3"
+                onClick={onExplore}
+                className="btn-gold px-8 py-4 rounded-xl text-stone-900 font-semibold text-lg shadow-2xl flex items-center gap-3 group"
+                style={{ fontFamily: 'Cinzel, serif' }}
               >
-                Eksploro Galerinë
-                <span className="group-hover:translate-x-1 transition-transform">→</span>
+                <span>Eksploro Galerinë</span>
+                <svg 
+                  className="w-5 h-5 transform group-hover:translate-x-2 transition-transform" 
+                  fill="none" 
+                  stroke="currentColor" 
+                  viewBox="0 0 24 24"
+                >
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />
+                </svg>
               </button>
-              <button className="px-8 py-4 glass rounded-full font-semibold text-lg hover:bg-white/10 transition-all duration-300 flex items-center justify-center gap-3">
-                <span>▶</span>
-                Shiko Video
+              
+              <button
+                className="px-8 py-4 rounded-xl border-2 border-amber-500/30 text-amber-400 font-semibold text-lg hover:bg-amber-500/10 transition-all duration-300 flex items-center gap-3"
+                style={{ fontFamily: 'Cinzel, serif' }}
+              >
+                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z" />
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+                <span>Shiko Video</span>
               </button>
             </div>
 
             {/* Stats */}
-            <div className="grid grid-cols-3 gap-6 mt-12 pt-8 border-t border-white/10">
+            <div className="flex gap-8 pt-8 border-t border-amber-500/20">
               <div>
-                <div className="text-3xl font-bold gradient-text">{images.length}+</div>
-                <div className="text-gray-400 text-sm">Imazhe</div>
+                <div className="text-3xl font-bold text-gold-gradient" style={{ fontFamily: 'Cinzel, serif' }}>
+                  {images.length}+
+                </div>
+                <div className="text-stone-400 text-sm">Vepra Arti</div>
               </div>
               <div>
-                <div className="text-3xl font-bold gradient-text">100%</div>
-                <div className="text-gray-400 text-sm">Cilësi</div>
+                <div className="text-3xl font-bold text-gold-gradient" style={{ fontFamily: 'Cinzel, serif' }}>
+                  15+
+                </div>
+                <div className="text-stone-400 text-sm">Vite Përvojë</div>
               </div>
               <div>
-                <div className="text-3xl font-bold gradient-text">24/7</div>
-                <div className="text-gray-400 text-sm">Online</div>
+                <div className="text-3xl font-bold text-gold-gradient" style={{ fontFamily: 'Cinzel, serif' }}>
+                  100%
+                </div>
+                <div className="text-stone-400 text-sm">Klientë të Kënaqur</div>
               </div>
             </div>
           </div>
 
-          {/* Hero Slider */}
-          <div className="relative">
-            <div className="relative aspect-[4/3] rounded-3xl overflow-hidden glass p-2">
-              <div className="relative w-full h-full rounded-2xl overflow-hidden">
-                {sliderImages.length > 0 ? (
-                  sliderImages.map((img, index) => (
-                    <div
-                      key={img.id}
-                      className={`absolute inset-0 transition-all duration-700 ${
-                        index === currentSlide
-                          ? 'opacity-100 scale-100'
-                          : 'opacity-0 scale-105'
-                      }`}
-                    >
-                      <img
-                        src={img.data}
-                        alt={img.name}
-                        className="w-full h-full object-cover"
-                      />
-                      <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent" />
-                    </div>
-                  ))
-                ) : (
-                  <div className="w-full h-full bg-gradient-to-br from-violet-500/20 to-pink-500/20 flex items-center justify-center">
-                    <div className="text-center">
-                      <div className="text-6xl mb-4">🖼️</div>
-                      <p className="text-gray-400">Ngarko imazhe për slider</p>
-                    </div>
-                  </div>
-                )}
-
-                {/* Slider Info */}
-                {sliderImages.length > 0 && (
-                  <div className="absolute bottom-4 left-4 right-4 flex items-end justify-between">
-                    <div className="glass-dark px-4 py-2 rounded-xl">
-                      <p className="text-white font-medium truncate max-w-[200px]">
-                        {sliderImages[currentSlide]?.name}
-                      </p>
-                    </div>
-                    <div className="flex gap-2">
-                      {sliderImages.map((_, index) => (
-                        <button
-                          key={index}
-                          onClick={() => setCurrentSlide(index)}
-                          className={`w-2 h-2 rounded-full transition-all duration-300 ${
-                            index === currentSlide
-                              ? 'w-6 bg-white'
-                              : 'bg-white/50 hover:bg-white/75'
-                          }`}
-                        />
-                      ))}
-                    </div>
-                  </div>
-                )}
+          {/* Right Content - Featured Logo */}
+          <div className="hidden lg:flex justify-center items-center">
+            <div className="relative">
+              {/* Animated rings */}
+              <div className="absolute inset-0 flex items-center justify-center">
+                <div className="w-80 h-80 rounded-full border border-amber-500/20 animate-spin-slow" />
+              </div>
+              <div className="absolute inset-0 flex items-center justify-center">
+                <div className="w-64 h-64 rounded-full border border-amber-500/30 animate-spin-slow" style={{ animationDirection: 'reverse', animationDuration: '15s' }} />
+              </div>
+              
+              {/* Center Logo */}
+              <div className="relative animate-float">
+                <Logo size="xl" showText={false} />
               </div>
 
-              {/* Slider Controls */}
-              {sliderImages.length > 1 && (
-                <>
-                  <button
-                    onClick={prevSlide}
-                    className="absolute left-4 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full glass-dark flex items-center justify-center hover:bg-white/20 transition-all"
-                  >
-                    ←
-                  </button>
-                  <button
-                    onClick={nextSlide}
-                    className="absolute right-4 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full glass-dark flex items-center justify-center hover:bg-white/20 transition-all"
-                  >
-                    →
-                  </button>
-                </>
-              )}
-            </div>
-
-            {/* Floating Elements */}
-            <div className="absolute -top-6 -right-6 w-24 h-24 rounded-2xl bg-gradient-to-br from-amber-400 to-orange-500 flex items-center justify-center text-4xl shadow-2xl animate-float">
-              ✨
-            </div>
-            <div className="absolute -bottom-4 -left-4 w-20 h-20 rounded-2xl bg-gradient-to-br from-violet-500 to-pink-500 flex items-center justify-center text-3xl shadow-2xl animate-float delay-500">
-              🎨
+              {/* Floating elements */}
+              <div className="absolute -top-10 -right-10 w-20 h-20 bg-gradient-to-br from-amber-500/20 to-amber-600/20 rounded-2xl backdrop-blur-sm border border-amber-500/20 flex items-center justify-center animate-float" style={{ animationDelay: '1s' }}>
+                <span className="text-3xl">💎</span>
+              </div>
+              <div className="absolute -bottom-5 -left-10 w-16 h-16 bg-gradient-to-br from-amber-500/20 to-amber-600/20 rounded-xl backdrop-blur-sm border border-amber-500/20 flex items-center justify-center animate-float" style={{ animationDelay: '2s' }}>
+                <span className="text-2xl">🏛️</span>
+              </div>
             </div>
           </div>
         </div>
       </div>
+
+      {/* Slider Dots */}
+      {sliderImages.length > 0 && (
+        <div className="absolute bottom-10 left-1/2 transform -translate-x-1/2 flex gap-3 z-10">
+          {sliderImages.map((_, index) => (
+            <button
+              key={index}
+              onClick={() => setCurrentSlide(index)}
+              className={`w-3 h-3 rounded-full transition-all duration-300 ${
+                index === currentSlide
+                  ? 'bg-amber-400 w-8'
+                  : 'bg-amber-400/30 hover:bg-amber-400/50'
+              }`}
+            />
+          ))}
+        </div>
+      )}
+
+      {/* Scroll indicator */}
+      <div className="absolute bottom-10 right-10 hidden lg:flex flex-col items-center gap-2 text-amber-400/50">
+        <span className="text-xs tracking-widest uppercase" style={{ writingMode: 'vertical-rl' }}>
+          Scroll
+        </span>
+        <div className="w-px h-16 bg-gradient-to-b from-amber-400/50 to-transparent" />
+      </div>
     </section>
   );
-}
+};
+
+export default HeroSection;
