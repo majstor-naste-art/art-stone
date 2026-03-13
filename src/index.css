@@ -1,7 +1,9 @@
-/* src/index.css */
-@import "tailwindcss"; /* Ndrysho nga @tailwind base; @tailwind components; @tailwind utilities; */
+/* Tailwind directives */
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
 
-/* Stilet e tua custom */
+/* Stilet custom */
 @layer base {
   body {
     @apply bg-black text-white;
