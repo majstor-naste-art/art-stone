@@ -1,23 +1,118 @@
 import { useState, useEffect, useRef, useCallback } from 'react';
 import { translations, Lang } from './i18n';
 
-// ─── Image Store (localStorage) ───
+// ─── Funksioni për kompresimin e imazheve ───
+async function compressImage(dataUrl: string, maxWidth: number = 1200, quality: number = 0.7): Promise<string> {
+  return new Promise((resolve) => {
+    const img = new Image();
+    img.src = dataUrl;
+    img.onload = () => {
+      const canvas = document.createElement('canvas');
+      let width = img.width;
+      let height = img.height;
+      
+      // Zvogëlo imazhin nëse është shumë i madh
+      if (width > maxWidth || height > maxWidth) {
+        if (width > height) {
+          height = Math.round((height / width) * maxWidth);
+          width = maxWidth;
+        } else {
+          width = Math.round((width / height) * maxWidth);
+          height = maxWidth;
+        }
+      }
+      
+      canvas.width = width;
+      canvas.height = height;
+      
+      const ctx = canvas.getContext('2d');
+      ctx?.drawImage(img, 0, 0, width, height);
+      
+      // Konverto në JPEG me cilësi të reduktuar për madhësi më të vogël
+      const compressed = canvas.toDataURL('image/jpeg', quality);
+      resolve(compressed);
+    };
+  });
+}
+
+// ─── Image Store (localStorage) me trajtim gabimi ───
 function loadImages(key: string): string[] {
   try {
     const d = localStorage.getItem(key);
     return d ? JSON.parse(d) : [];
-  } catch { return []; }
+  } catch { 
+    return []; 
+  }
 }
+
 function saveImages(key: string, imgs: string[]) {
-  localStorage.setItem(key, JSON.stringify(imgs));
+  try {
+    // Kontrollo madhësinë para se të ruash
+    const size = new Blob([JSON.stringify(imgs)]).size;
+    const sizeInMB = size / (1024 * 1024);
+    
+    // Nëse madhësia kalon 4.5 MB (lëmë pak hapësirë rezervë)
+    if (sizeInMB > 4.5) {
+      console.warn(`Storage size warning: ${sizeInMB.toFixed(2)}MB exceeds recommended limit`);
+      // Megjithatë, provoje të ruash - mund të funksionojë ende
+    }
+    
+    localStorage.setItem(key, JSON.stringify(imgs));
+  } catch (e) {
+    console.error('Failed to save to localStorage:', e);
+    // Nëse dështon, mund të tregojmë një mesazh
+    if (e instanceof DOMException && e.name === 'QuotaExceededError') {
+      alert('Hapsira e ruajtjes është plot! Fshini disa imazhe para se të ngarkoni të reja.');
+    }
+    throw e; // Rihidhe gabimin që komponenti ta kapë
+  }
 }
 
 // ─── Hooks ───
-function useImages(key: string) {
-  const [images, setImages] = useState<string[]>(() => loadImages(key));
-  useEffect(() => { saveImages(key, images); }, [key, images]);
-  const add = (newImgs: string[]) => setImages(prev => [...prev, ...newImgs]);
+function useImages(key: string, maxImages: number = 30) {
+  const [images, setImages] = useState<string[]>(() => {
+    try {
+      return loadImages(key);
+    } catch {
+      return [];
+    }
+  });
+  
+  useEffect(() => { 
+    try {
+      saveImages(key, images);
+    } catch (e) {
+      console.warn('Storage quota exceeded, cleaning up...');
+      // Ruaj vetëm 10 imazhet më të fundit
+      const recentImages = images.slice(-10);
+      try {
+        saveImages(key, recentImages);
+        setImages(recentImages);
+        alert('Hapsira e ruajtjes ishte plot. Janë ruajtur vetëm imazhet më të fundit.');
+      } catch {
+        // Nëse ende nuk ka vend, fshij gjithçka
+        localStorage.removeItem(key);
+        setImages([]);
+        alert('Hapsira e ruajtjes është plot. Ju lutemi fshini disa imazhe para se të ngarkoni të reja.');
+      }
+    }
+  }, [key, images]);
+  
+  const add = async (newImgs: string[]) => {
+    // Kompreso imazhet para se t'i shtosh
+    const compressedImgs = await Promise.all(
+      newImgs.map(img => compressImage(img))
+    );
+    
+    setImages(prev => {
+      const combined = [...prev, ...compressedImgs];
+      // Kufizo numrin total
+      return combined.slice(-maxImages);
+    });
+  };
+  
   const remove = (idx: number) => setImages(prev => prev.filter((_, i) => i !== idx));
+  
   return { images, add, remove };
 }
 
@@ -159,23 +254,47 @@ function HeroSlider({ images, t }: { images: string[]; t: Record<string, string>
 // ─── Upload Button ───
 function UploadButton({ label, onUpload }: { label: string; onUpload: (imgs: string[]) => void }) {
   const inputRef = useRef<HTMLInputElement>(null);
+  const [isUploading, setIsUploading] = useState(false);
+  
   const handleChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files.length > 0) {
-      const imgs = await readFiles(e.target.files);
-      onUpload(imgs);
-      e.target.value = '';
+      try {
+        setIsUploading(true);
+        const imgs = await readFiles(e.target.files);
+        await onUpload(imgs);
+      } catch (error) {
+        console.error('Upload error:', error);
+        alert('Ndodhi një gabim gjatë ngarkimit të imazheve.');
+      } finally {
+        setIsUploading(false);
+        e.target.value = '';
+      }
     }
   };
+  
   return (
     <>
       <input ref={inputRef} type="file" accept="image/*" multiple className="hidden" onChange={handleChange} />
       <button
-        type="button"  // KY ËSHTË NDRYSHIMI KRYESOR QË PARANDALON REFRESH-IN
+        type="button"
         onClick={() => inputRef.current?.click()}
-        className="inline-flex items-center gap-2 bg-amber-500 hover:bg-amber-600 text-white font-bold py-3 px-6 rounded-full transition-all shadow-lg hover:shadow-amber-500/30 hover:scale-105"
+        disabled={isUploading}
+        className="inline-flex items-center gap-2 bg-amber-500 hover:bg-amber-600 text-white font-bold py-3 px-6 rounded-full transition-all shadow-lg hover:shadow-amber-500/30 hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed"
       >
-        <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" /></svg>
-        {label}
+        {isUploading ? (
+          <>
+            <svg className="animate-spin h-5 w-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+              <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+              <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+            </svg>
+            Duke ngarkuar...
+          </>
+        ) : (
+          <>
+            <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" /></svg>
+            {label}
+          </>
+        )}
       </button>
     </>
   );
@@ -234,8 +353,8 @@ export default function App() {
 
   const t = translations[lang];
 
-  const slider = useImages('majstor-slider');
-  const gallery = useImages('majstor-gallery');
+  const slider = useImages('majstor-slider', 15); // Maksimumi 15 imazhe për slider
+  const gallery = useImages('majstor-gallery', 30); // Maksimumi 30 imazhe për galeri
 
   useEffect(() => { localStorage.setItem('lang', lang); }, [lang]);
 
