@@ -19,7 +19,7 @@ const languages: Language[] = [
 
 const translations = {
   mk: {
-    title: "KAMEN",
+    title: "MAJSTOR-NASTE",
     subtitle: "Природен камен и мермер",
     nav: ["Почетна", "Услуги", "Галерија", "Проекти", "Контакт"],
     heroTitle: "Елеганција на природниот камен",
@@ -48,10 +48,10 @@ const translations = {
     email: "Е-пошта",
     message: "Порака",
     send: "Испрати порака",
-    footer: "© 2025 KAMEN. Сите права задржани."
+    footer: "© 2025 MAJSTOR-NASTE. Сите права задржани."
   },
   en: {
-    title: "KAMEN",
+    title: "MAJSTOR-NASTE",
     subtitle: "Natural Stone & Marble",
     nav: ["Home", "Services", "Gallery", "Projects", "Contact"],
     heroTitle: "The Elegance of Natural Stone",
@@ -80,10 +80,10 @@ const translations = {
     email: "Email",
     message: "Message",
     send: "Send Message",
-    footer: "© 2025 KAMEN. All rights reserved."
+    footer: "© 2025 MAJSTOR-NASTE. All rights reserved."
   },
   bg: {
-    title: "KAMEN",
+    title: "MAJSTOR-NASTE",
     subtitle: "Естествен камък и мрамор",
     nav: ["Начало", "Услуги", "Галерия", "Проекти", "Контакт"],
     heroTitle: "Елегантността на естествения камък",
@@ -112,10 +112,10 @@ const translations = {
     email: "Имейл",
     message: "Съобщение",
     send: "Изпрати",
-    footer: "© 2025 KAMEN. Всички права запазени."
+    footer: "© 2025 MAJSTOR-NASTE. Всички права запазени."
   },
   sq: {
-    title: "KAMEN",
+    title: "MAJSTOR-NASTE",
     subtitle: "Gur natyror & Mermer",
     nav: ["Kreu", "Shërbimet", "Galeria", "Projektet", "Kontakt"],
     heroTitle: "Eleganca e gurit natyror",
@@ -144,7 +144,7 @@ const translations = {
     email: "Email",
     message: "Mesazhi",
     send: "Dërgo mesazhin",
-    footer: "© 2025 KAMEN. Të gjitha të drejtat e rezervuara."
+    footer: "© 2025 MAJSTOR-NASTE. Të gjitha të drejtat e rezervuara."
   }
 };
 
