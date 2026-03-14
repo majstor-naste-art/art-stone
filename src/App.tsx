@@ -19,7 +19,7 @@ const languages: Language[] = [
 
 const translations = {
   mk: {
-    title: "KAMEN",
+    title: "MAJSTOR-NASTE",
     subtitle: "Природен камен и мермер",
     nav: ["Почетна", "Услуги", "Галерија", "Проекти", "Контакт"],
     heroTitle: "Елеганција на природниот камен",
@@ -27,7 +27,7 @@ const translations = {
     cta1: "Погледни галерија",
     cta2: "Контактирај не",
     aboutTitle: "За нас",
-    aboutText: "Со повеќе од 15 години искуство, KAMEN е водечка компанија во обработка и монтажа на природен камен. Ние создаваме уникатни решенија кои го комбинираат традиционалното занаетчиство со модерната технологија.",
+    aboutText: "Со повеќе од 15 години искуство, MAJSTOR-NASTE е водечка компанија во обработка и монтажа на природен камен. Ние создаваме уникатни решенија кои го комбинираат традиционалното занаетчиство со модерната технологија.",
     servicesTitle: "Наши услуги",
     services: [
       { title: "Кухински пултови", desc: "Гранит и кварц пултови со врвна издржливост и елеганција", icon: "Counter" },
@@ -48,10 +48,10 @@ const translations = {
     email: "Е-пошта",
     message: "Порака",
     send: "Испрати порака",
-    footer: "© 2025 KAMEN. Сите права задржани."
+    footer: "© 2025 MAJSTOR-NASTE. Сите права задржани."
   },
   en: {
-    title: "KAMEN",
+    title: "MAJSTOR-NASTE",
     subtitle: "Natural Stone & Marble",
     nav: ["Home", "Services", "Gallery", "Projects", "Contact"],
     heroTitle: "The Elegance of Natural Stone",
@@ -59,7 +59,7 @@ const translations = {
     cta1: "View Gallery",
     cta2: "Contact Us",
     aboutTitle: "About Us",
-    aboutText: "With over 15 years of experience, KAMEN is a leading company in natural stone processing and installation. We create unique solutions that combine traditional craftsmanship with modern technology.",
+    aboutText: "With over 15 years of experience, MAJSTOR-NASTE is a leading company in natural stone processing and installation. We create unique solutions that combine traditional craftsmanship with modern technology.",
     servicesTitle: "Our Services",
     services: [
       { title: "Kitchen Countertops", desc: "Granite and quartz countertops with top durability and elegance", icon: "Counter" },
@@ -80,10 +80,10 @@ const translations = {
     email: "Email",
     message: "Message",
     send: "Send Message",
-    footer: "© 2025 KAMEN. All rights reserved."
+    footer: "© 2025 MAJSTOR-NASTE. All rights reserved."
   },
   bg: {
-    title: "KAMEN",
+    title: "MAJSTOR-NASTE",
     subtitle: "Естествен камък и мрамор",
     nav: ["Начало", "Услуги", "Галерия", "Проекти", "Контакт"],
     heroTitle: "Елегантността на естествения камък",
@@ -91,7 +91,7 @@ const translations = {
     cta1: "Виж галерията",
     cta2: "Свържете се с нас",
     aboutTitle: "За нас",
-    aboutText: "С над 15 години опит, KAMEN е водеща компания в обработката и монтажа на естествен камък. Създаваме уникални решения, които комбинират традиционния занаят с модерните технологии.",
+    aboutText: "С над 15 години опит, MAJSTOR-NASTE е водеща компания в обработката и монтажа на естествен камък. Създаваме уникални решения, които комбинират традиционния занаят с модерните технологии.",
     servicesTitle: "Нашите услуги",
     services: [
       { title: "Кухненски плотове", desc: "Гранитни и кварцови плотове с висока издръжливост и елегантност", icon: "Counter" },
@@ -112,10 +112,10 @@ const translations = {
     email: "Имейл",
     message: "Съобщение",
     send: "Изпрати",
-    footer: "© 2025 KAMEN. Всички права запазени."
+    footer: "© 2025 MAJSTOR-NASTE. Всички права запазени."
   },
   sq: {
-    title: "KAMEN",
+    title: "MAJSTOR-NASTE",
     subtitle: "Gur natyror & Mermer",
     nav: ["Kreu", "Shërbimet", "Galeria", "Projektet", "Kontakt"],
     heroTitle: "Eleganca e gurit natyror",
@@ -123,7 +123,7 @@ const translations = {
     cta1: "Shiko Galerinë",
     cta2: "Na kontaktoni",
     aboutTitle: "Rreth nesh",
-    aboutText: "Me mbi 15 vjet përvojë, KAMEN është një kompani lider në përpunimin dhe instalimin e gurit natyror. Ne krijojmë zgjidhje unike që kombinojnë mjeshtërinë tradicionale me teknologjinë moderne.",
+    aboutText: "Me mbi 15 vjet përvojë, MAJSTOR-NASTE është një kompani lider në përpunimin dhe instalimin e gurit natyror. Ne krijojmë zgjidhje unike që kombinojnë mjeshtërinë tradicionale me teknologjinë moderne.",
     servicesTitle: "Shërbimet tona",
     services: [
       { title: "Pllaka kuzhine", desc: "Pllaka graniti dhe kuarci me qëndrueshmëri dhe elegancë të lartë", icon: "Counter" },
@@ -144,7 +144,7 @@ const translations = {
     email: "Email",
     message: "Mesazhi",
     send: "Dërgo mesazhin",
-    footer: "© 2025 KAMEN. Të gjitha të drejtat e rezervuara."
+    footer: "© 2025 MAJSTOR-NASTE. Të gjitha të drejtat e rezervuara."
   }
 };
 
@@ -262,10 +262,10 @@ export default function App() {
             {/* Logo */}
             <div className="flex items-center gap-2">
               <div className="w-10 h-10 bg-gradient-to-br from-amber-400 to-amber-600 rounded-xl flex items-center justify-center text-zinc-950 font-bold text-2xl shadow-inner">
-                K
+                M
               </div>
               <div>
-                <div className="text-3xl font-bold tracking-tighter text-white">KAMEN</div>
+                <div className="text-3xl font-bold tracking-tighter text-white">MAJSTOR-NASTE</div>
                 <div className="text-[10px] text-amber-400 -mt-1">NATURAL STONE</div>
               </div>
             </div>
@@ -564,7 +564,7 @@ export default function App() {
                     <Mail className="text-amber-400 mt-1" />
                     <div>
                       <div className="text-white/70 text-sm">EMAIL</div>
-                      <a href="mailto:info@kamen.mk" className="text-xl">info@kamen.mk</a>
+                      <a href="mailto:info@kamen.mk" className="text-xl">info@majstornaste.mk</a>
                     </div>
                   </div>
                   <div className="flex gap-5">
@@ -655,7 +655,7 @@ export default function App() {
           <div className="flex justify-center mb-8">
             <div className="flex items-center gap-3 opacity-40">
               <div className="w-8 h-8 bg-white rounded-2xl flex items-center justify-center text-xl">🪨</div>
-              <div className="text-4xl font-bold tracking-tighter">KAMEN</div>
+              <div className="text-4xl font-bold tracking-tighter">MAJSTOR-NASTE</div>
             </div>
           </div>
           
