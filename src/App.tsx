@@ -19,7 +19,7 @@ const languages: Language[] = [
 
 const translations = {
   mk: {
-    title: "MAJSTOR-NASTE",
+    title: "KAMEN",
     subtitle: "Природен камен и мермер",
     nav: ["Почетна", "Услуги", "Галерија", "Проекти", "Контакт"],
     heroTitle: "Елеганција на природниот камен",
@@ -48,10 +48,10 @@ const translations = {
     email: "Е-пошта",
     message: "Порака",
     send: "Испрати порака",
-    footer: "© 2025 MAJSTOR-NASTE. Сите права задржани."
+    footer: "© 2025 KAMEN. Сите права задржани."
   },
   en: {
-    title: "MAJSTOR-NASTE",
+    title: "KAMEN",
     subtitle: "Natural Stone & Marble",
     nav: ["Home", "Services", "Gallery", "Projects", "Contact"],
     heroTitle: "The Elegance of Natural Stone",
@@ -80,10 +80,10 @@ const translations = {
     email: "Email",
     message: "Message",
     send: "Send Message",
-    footer: "© 2025 MAJSTOR-NASTE. All rights reserved."
+    footer: "© 2025 KAMEN. All rights reserved."
   },
   bg: {
-    title: "MAJSTOR-NASTE",
+    title: "KAMEN",
     subtitle: "Естествен камък и мрамор",
     nav: ["Начало", "Услуги", "Галерия", "Проекти", "Контакт"],
     heroTitle: "Елегантността на естествения камък",
@@ -112,58 +112,59 @@ const translations = {
     email: "Имейл",
     message: "Съобщение",
     send: "Изпрати",
-    footer: "© 2025 MAJSTOR-NASTE. Всички права запазени."
+    footer: "© 2025 KAMEN. Всички права запазени."
   },
   sq: {
-    title: "MAJSTOR-NASTE",
+    title: "KAMEN",
     subtitle: "Gur natyror & Mermer",
     nav: ["Kreu", "Shërbimet", "Galeria", "Projektet", "Kontakt"],
     heroTitle: "Eleganca e gurit natyror",
     heroSubtitle: "Mermer, granit dhe gur natyror premium për shtëpinë dhe biznesin tuaj",
-    cta1: "Shiko Galerine",
-    cta2: "Na kontakto",
+    cta1: "Shiko Galerinë",
+    cta2: "Na kontaktoni",
     aboutTitle: "Rreth nesh",
     aboutText: "Me mbi 15 vjet përvojë, KAMEN është një kompani lider në përpunimin dhe instalimin e gurit natyror. Ne krijojmë zgjidhje unike që kombinojnë mjeshtërinë tradicionale me teknologjinë moderne.",
     servicesTitle: "Shërbimet tona",
     services: [
-      { title: "Pllaka kuzhine", desc: "Pllaka graniti dhe kuarc me qëndrueshmëri dhe elegancë të lartë", icon: "Counter" },
+      { title: "Pllaka kuzhine", desc: "Pllaka graniti dhe kuarci me qëndrueshmëri dhe elegancë të lartë", icon: "Counter" },
       { title: "Dysheme guri", desc: "Dysheme mermeri dhe graniti për pamje perfekte", icon: "Floor" },
       { title: "Fasada guri", desc: "Gur natyror për eksterier me bukuri të qëndrueshme", icon: "Wall" },
-      { title: "Banjo & SPA", desc: "Banjo luksoze prej guri dhe hapësira relaksi", icon: "Bath" },
-      { title: "Skulptura & Dekor", desc: "Skulptura artistike prej guri dhe elemente dekorative", icon: "Sculpture" },
+      { title: "Banjo dhe SPA", desc: "Banjo luksoze prej guri dhe hapësira relaksi", icon: "Bath" },
+      { title: "Skulptura dhe Dekor", desc: "Skulptura artistike prej guri dhe elemente dekorative", icon: "Sculpture" },
       { title: "Restaurim", desc: "Restaurim i sipërfaqeve të vjetra prej mermeri dhe guri", icon: "Restore" },
     ],
     galleryTitle: "Galeria",
-    uploadBtn: "Ngarko foton tënde",
+    uploadBtn: "Ngarko foton tuaj",
     projectsTitle: "Projektet tona",
     testimonialsTitle: "Çfarë thonë klientët tanë",
-    contactTitle: "Na kontakto",
-    contactSubtitle: "Jemi gati të realizojmë ëndrrën tuaj",
+    contactTitle: "Na kontaktoni",
+    contactSubtitle: "Jemi gati ta realizojmë ëndrrën tuaj",
     name: "Emri i plotë",
     phone: "Telefoni",
     email: "Email",
     message: "Mesazhi",
     send: "Dërgo mesazhin",
-    footer: "© 2025 MAJSTOR-NASTE. Të gjitha të drejtat e rezervuara."
+    footer: "© 2025 KAMEN. Të gjitha të drejtat e rezervuara."
   }
 };
 
+// Stone-specific images - all real stone, marble and granite works
 const stoneImages = [
-  "https://picsum.photos/id/1015/1200/800",
-  "https://picsum.photos/id/1033/1200/800",
-  "https://picsum.photos/id/106/1200/800",
-  "https://picsum.photos/id/201/1200/800",
+  "https://images.unsplash.com/photo-1556909211-36987daf7b4d?q=80&w=1200&auto=format&fit=crop", // Marble slab
+  "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?q=80&w=1200&auto=format&fit=crop", // Granite countertop
+  "https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?q=80&w=1200&auto=format&fit=crop", // Stone wall
+  "https://images.unsplash.com/photo-1600566753086-00f18fb6b3ea?q=80&w=1200&auto=format&fit=crop", // Marble bathroom
 ];
 
 const galleryImages = [
-  "https://picsum.photos/id/1015/600/600",
-  "https://picsum.photos/id/1033/600/600",
-  "https://picsum.photos/id/106/600/600",
-  "https://picsum.photos/id/201/600/600",
-  "https://picsum.photos/id/133/600/600",
-  "https://picsum.photos/id/160/600/600",
-  "https://picsum.photos/id/201/600/600",
-  "https://picsum.photos/id/251/600/600",
+  "https://images.unsplash.com/photo-1600585154526-990dced4db0d?q=80&w=600&auto=format&fit=crop", // Marble kitchen island
+  "https://images.unsplash.com/photo-1600566752355-35792bedcfea?q=80&w=600&auto=format&fit=crop", // Stone bathroom
+  "https://images.unsplash.com/photo-1556909211-36987daf7b4d?q=80&w=600&auto=format&fit=crop", // White marble
+  "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?q=80&w=600&auto=format&fit=crop", // Granite counter
+  "https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?q=80&w=600&auto=format&fit=crop", // Stone cladding
+  "https://images.unsplash.com/photo-1618221195710-dd0b2e9bd9e8?q=80&w=600&auto=format&fit=crop", // Marble floor
+  "https://images.unsplash.com/photo-1600566753190-17f0baa2a6c3?q=80&w=600&auto=format&fit=crop", // Stone fireplace
+  "https://images.unsplash.com/photo-1600607688969-a5bfcd646154?q=80&w=600&auto=format&fit=crop", // Stone staircase
 ];
 
 const testimonials = [
@@ -264,7 +265,7 @@ export default function App() {
                 K
               </div>
               <div>
-                <div className="text-3xl font-bold tracking-tighter text-white">MAJSTOR-NASTE</div>
+                <div className="text-3xl font-bold tracking-tighter text-white">KAMEN</div>
                 <div className="text-[10px] text-amber-400 -mt-1">NATURAL STONE</div>
               </div>
             </div>
@@ -339,7 +340,7 @@ export default function App() {
           >
             <img 
               src={img} 
-              alt="Stone" 
+              alt="Stone work" 
               className="object-cover w-full h-full"
             />
             <div className="absolute inset-0 bg-gradient-to-b from-black/40 via-black/70 to-black/90"></div>
@@ -412,7 +413,7 @@ export default function App() {
         <div className="max-w-6xl mx-auto px-6">
           <div className="grid md:grid-cols-12 gap-16 items-center">
             <div className="md:col-span-7">
-              <div className="text-amber-400 text-sm tracking-[2px] mb-4">НАСЛЕДСТВО ОД КАМЕН</div>
+              <div className="text-amber-400 text-sm tracking-[2px] mb-4">TRASHËGIMI PREJ GURI</div>
               <h2 className="text-5xl font-semibold leading-none tracking-tight mb-8">
                 {t.aboutTitle}
               </h2>
@@ -423,15 +424,15 @@ export default function App() {
               <div className="grid grid-cols-3 gap-8 mt-16">
                 <div>
                   <div className="text-4xl font-mono text-amber-400">15+</div>
-                  <div className="text-sm text-white/60 mt-2">ГОДИНИ ИСКУСТВО</div>
+                  <div className="text-sm text-white/60 mt-2">VITE PËRVOJË</div>
                 </div>
                 <div>
                   <div className="text-4xl font-mono text-amber-400">380</div>
-                  <div className="text-sm text-white/60 mt-2">ПРОЕКТИ ЗАВРШЕНИ</div>
+                  <div className="text-sm text-white/60 mt-2">PROJEKTE TË PËRFUNDUARA</div>
                 </div>
                 <div>
                   <div className="text-4xl font-mono text-amber-400">24</div>
-                  <div className="text-sm text-white/60 mt-2">ЗЕМЈИ ИЗВЕЗЕНИ</div>
+                  <div className="text-sm text-white/60 mt-2">VENDE TË EKSPORTUARA</div>
                 </div>
               </div>
             </div>
@@ -439,7 +440,7 @@ export default function App() {
             <div className="md:col-span-5">
               <div className="aspect-square bg-zinc-800 rounded-3xl overflow-hidden border border-amber-900">
                 <img 
-                  src="https://picsum.photos/id/1016/800/800" 
+                  src="https://images.unsplash.com/photo-1600585154340-be6161a56a0c?q=80&w=800&auto=format&fit=crop" 
                   alt="Stone workshop" 
                   className="w-full h-full object-cover"
                 />
@@ -453,7 +454,7 @@ export default function App() {
       <div id="services" className="py-24">
         <div className="max-w-6xl mx-auto px-6">
           <div className="text-center mb-16">
-            <div className="text-amber-400 text-sm tracking-widest mb-3">ПРЕМИУМ КВАЛИТЕТ</div>
+            <div className="text-amber-400 text-sm tracking-widest mb-3">CILËSI PREMIUM</div>
             <h2 className="text-5xl font-semibold">{t.servicesTitle}</h2>
           </div>
 
@@ -467,7 +468,7 @@ export default function App() {
                 <p className="text-white/70 leading-relaxed">{service.desc}</p>
                 
                 <div className="mt-8 pt-8 border-t border-white/10 text-xs flex items-center gap-2 text-amber-400">
-                  <span>ПОДОБРО ОД ВЧЕРА</span>
+                  <span>MË MIRË SE DJE</span>
                   <ArrowRight className="group-hover:translate-x-1 transition" />
                 </div>
               </div>
@@ -481,7 +482,7 @@ export default function App() {
         <div className="max-w-7xl mx-auto px-6">
           <div className="flex justify-between items-end mb-12">
             <div>
-              <div className="uppercase text-xs tracking-widest text-amber-400 mb-2">НАШЕ ТВОРЕШТВО</div>
+              <div className="uppercase text-xs tracking-widest text-amber-400 mb-2">KRIJIMTARIA JONË</div>
               <h2 className="text-5xl font-semibold">{t.galleryTitle}</h2>
             </div>
             
@@ -507,7 +508,7 @@ export default function App() {
                   className="w-full h-full object-cover transition-all group-hover:scale-110 duration-700"
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent opacity-0 group-hover:opacity-100 transition-all flex items-end p-6">
-                  <div className="text-xs text-white/80">Природен камен • {2022 + (index % 3)}</div>
+                  <div className="text-xs text-white/80">Gur natyror • {2022 + (index % 3)}</div>
                 </div>
               </div>
             ))}
@@ -545,7 +546,7 @@ export default function App() {
           <div className="grid md:grid-cols-12 gap-16">
             <div className="md:col-span-5">
               <div className="sticky top-28">
-                <div className="text-amber-400 text-sm mb-6 tracking-widest">СКАПЈЕ • СОФИЈА • ТИРАНА</div>
+                <div className="text-amber-400 text-sm mb-6 tracking-widest">SHKUP • SOFIE • TIRANË</div>
                 <h2 className="text-6xl font-semibold leading-none tracking-tighter mb-8">
                   {t.contactTitle}
                 </h2>
@@ -555,7 +556,7 @@ export default function App() {
                   <div className="flex gap-5">
                     <Phone className="text-amber-400 mt-1" />
                     <div>
-                      <div className="text-white/70 text-sm">ТЕЛЕФОН</div>
+                      <div className="text-white/70 text-sm">TELEFONI</div>
                       <a href="tel:+38970123456" className="text-xl">+389 70 123 456</a>
                     </div>
                   </div>
@@ -569,8 +570,8 @@ export default function App() {
                   <div className="flex gap-5">
                     <MapPin className="text-amber-400 mt-1" />
                     <div>
-                      <div className="text-white/70 text-sm">АДРЕСА</div>
-                      <div className="text-xl">Бул. Партизански Одреди 43,<br />1000 Скопје, Македонија</div>
+                      <div className="text-white/70 text-sm">ADRESA</div>
+                      <div className="text-xl">Bulevardi Partizanski Odredi 43,<br />1000 Shkup, Maqedoni</div>
                     </div>
                   </div>
                 </div>
@@ -584,8 +585,8 @@ export default function App() {
                   <div className="w-20 h-20 rounded-2xl bg-emerald-400/10 flex items-center justify-center mx-auto mb-6">
                     <Heart className="text-emerald-400" size={42} />
                   </div>
-                  <div className="text-3xl font-medium mb-3">Ви благодариме!</div>
-                  <div className="text-white/70 max-w-xs">Ќе ве контактираме во рок од 24 часа.</div>
+                  <div className="text-3xl font-medium mb-3">Faleminderit!</div>
+                  <div className="text-white/70 max-w-xs">Do t'ju kontaktojmë brenda 24 orëve.</div>
                 </div>
               ) : (
                 <form onSubmit={handleSubmit} className="space-y-8">
@@ -630,7 +631,7 @@ export default function App() {
                       onChange={(e) => setFormData({...formData, message: e.target.value})}
                       rows={6}
                       className="w-full bg-zinc-900 border border-zinc-700 focus:border-amber-400 rounded-3xl px-6 py-6 outline-none text-lg resize-y"
-                      placeholder="Кажете ни за вашиот проект..."
+                      placeholder="Na tregoni për projektin tuaj..."
                       required
                     />
                   </div>
@@ -662,7 +663,7 @@ export default function App() {
             {t.footer}
           </div>
           <div className="text-[10px] text-white/30 mt-8">
-            MULTILINGUAL • MACEDONIA • BULGARIA • ALBANIA
+            MULTILINGUAL • MAQEDONI • BULLGARI • SHQIPËRI
           </div>
         </div>
       </footer>
@@ -693,13 +694,13 @@ export default function App() {
       {showUpload && (
         <div className="fixed inset-0 bg-black/90 z-[110] flex items-center justify-center">
           <div className="bg-zinc-900 rounded-3xl max-w-md w-full mx-4 p-10">
-            <h3 className="text-3xl mb-2">Додај слика</h3>
-            <p className="text-white/60 mb-8">Споделете ја вашата работа со природен камен</p>
+            <h3 className="text-3xl mb-2">Shto foto</h3>
+            <p className="text-white/60 mb-8">Ndani punën tuaj me gur natyror</p>
             
             <label className="border border-dashed border-amber-400 hover:border-amber-300 h-64 rounded-3xl flex flex-col items-center justify-center cursor-pointer transition-all">
               <Upload size={52} className="text-amber-400 mb-6" />
               <div className="text-center">
-                <div className="font-medium">Кликни за да прикачиш</div>
+                <div className="font-medium">Kliko për të ngarkuar</div>
                 <div className="text-xs text-white/50 mt-1">JPG, PNG, WEBP • max 10MB</div>
               </div>
               <input 
@@ -715,7 +716,7 @@ export default function App() {
               onClick={() => setShowUpload(false)}
               className="mt-8 w-full py-4 text-sm tracking-widest border border-white/30 rounded-2xl"
             >
-              ОТКАЖИ
+              ANULO
             </button>
           </div>
         </div>
