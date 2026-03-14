@@ -264,7 +264,7 @@ export default function App() {
                 K
               </div>
               <div>
-                <div className="text-3xl font-bold tracking-tighter text-white">mAJSTOR-NASTE</div>
+                <div className="text-3xl font-bold tracking-tighter text-white">MAJSTOR-NASTE</div>
                 <div className="text-[10px] text-amber-400 -mt-1">NATURAL STONE</div>
               </div>
             </div>
