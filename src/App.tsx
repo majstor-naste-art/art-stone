@@ -1,793 +1,511 @@
-import React, { useState, useEffect } from "react";
-import { 
-  Menu, X, Phone, Mail, MapPin, ArrowRight, 
-  Upload, Heart, Star, ChevronLeft, ChevronRight 
-} from "lucide-react";
+import { useState, useEffect, useRef, useCallback } from 'react';
+import { translations, Lang } from './i18n';
 
-interface Language {
-  code: string;
-  name: string;
-  flag: string;
+// ─── Image Store (localStorage) ───
+function loadImages(key: string): string[] {
+  try {
+    const d = localStorage.getItem(key);
+    return d ? JSON.parse(d) : [];
+  } catch { return []; }
+}
+function saveImages(key: string, imgs: string[]) {
+  localStorage.setItem(key, JSON.stringify(imgs));
 }
 
-const languages: Language[] = [
-  { code: 'mk', name: 'Македонски', flag: '🇲🇰' },
-  { code: 'en', name: 'English', flag: '🇬🇧' },
-  { code: 'bg', name: 'Български', flag: '🇧🇬' },
-  { code: 'sq', name: 'Shqip', flag: '🇦🇱' },
-];
+// ─── Hooks ───
+function useImages(key: string) {
+  const [images, setImages] = useState<string[]>(() => loadImages(key));
+  useEffect(() => { saveImages(key, images); }, [key, images]);
+  const add = (newImgs: string[]) => setImages(prev => [...prev, ...newImgs]);
+  const remove = (idx: number) => setImages(prev => prev.filter((_, i) => i !== idx));
+  return { images, add, remove };
+}
 
-const translations = {
-  mk: {
-    title: "MAJSTOR-NASTE",
-    subtitle: "Природен камен и мермер",
-    nav: ["Почетна", "Услуги", "Галерија", "Проекти", "Контакт"],
-    heroTitle: "Елеганција на природниот камен",
-    heroSubtitle: "Премиум мермер, гранит и природен камен за вашиот дом и бизнис",
-    cta1: "Погледни галерија",
-    cta2: "Контактирај не",
-    aboutTitle: "За нас",
-    aboutText: "Со повеќе од 15 години искуство, MAJSTOR-NASTE е водечка компанија во обработка и монтажа на природен камен. Ние создаваме уникатни решенија кои го комбинираат традиционалното занаетчиство со модерната технологија.",
-    servicesTitle: "Наши услуги",
-    services: [
-      { title: "Кухински пултови", desc: "Гранит и кварц пултови со врвна издржливост и елеганција", icon: "Counter" },
-      { title: "Подови од камен", desc: "Мермерни и гранитни подови за совршен изглед", icon: "Floor" },
-      { title: "Фасади од камен", desc: "Природен камен за екстериер со долготрајна убавина", icon: "Wall" },
-      { title: "Бањи и СПА", desc: "Луксузни камени бањи и релаксациони простори", icon: "Bath" },
-      { title: "Скулптури и декор", desc: "Уметнички камени скулптури и декоративни елементи", icon: "Sculpture" },
-      { title: "Реставрација", desc: "Обнова на стари мермерни и камени површини", icon: "Restore" },
-    ],
-    galleryTitle: "Галерија",
-    uploadBtn: "Додај своја слика",
-    projectsTitle: "Наши проекти",
-    testimonialsTitle: "Што велат клиентите",
-    contactTitle: "Контактирајте не",
-    contactSubtitle: "Подготвени сме да го реализираме вашиот сон",
-    name: "Име и презиме",
-    phone: "Телефон",
-    email: "Е-пошта",
-    message: "Порака",
-    send: "Испрати порака",
-    footer: "© 2025 MAJSTOR-NASTE. Сите права задржани."
-  },
-  en: {
-    title: "MAJSTOR-NASTE",
-    subtitle: "Natural Stone & Marble",
-    nav: ["Home", "Services", "Gallery", "Projects", "Contact"],
-    heroTitle: "The Elegance of Natural Stone",
-    heroSubtitle: "Premium marble, granite and natural stone for your home and business",
-    cta1: "View Gallery",
-    cta2: "Contact Us",
-    aboutTitle: "About Us",
-    aboutText: "With over 15 years of experience, MAJSTOR-NASTE is a leading company in natural stone processing and installation. We create unique solutions that combine traditional craftsmanship with modern technology.",
-    servicesTitle: "Our Services",
-    services: [
-      { title: "Kitchen Countertops", desc: "Granite and quartz countertops with top durability and elegance", icon: "Counter" },
-      { title: "Stone Flooring", desc: "Marble and granite floors for a perfect look", icon: "Floor" },
-      { title: "Stone Facades", desc: "Natural stone for exterior with long-lasting beauty", icon: "Wall" },
-      { title: "Bathrooms & SPA", desc: "Luxurious stone bathrooms and relaxation areas", icon: "Bath" },
-      { title: "Sculptures & Decor", desc: "Artistic stone sculptures and decorative elements", icon: "Sculpture" },
-      { title: "Restoration", desc: "Restoration of old marble and stone surfaces", icon: "Restore" },
-    ],
-    galleryTitle: "Gallery",
-    uploadBtn: "Upload your photo",
-    projectsTitle: "Our Projects",
-    testimonialsTitle: "What Our Clients Say",
-    contactTitle: "Contact Us",
-    contactSubtitle: "We are ready to make your dream come true",
-    name: "Full Name",
-    phone: "Phone",
-    email: "Email",
-    message: "Message",
-    send: "Send Message",
-    footer: "© 2025 MAJSTOR-NASTE. All rights reserved."
-  },
-  bg: {
-    title: "MAJSTOR-NASTE",
-    subtitle: "Естествен камък и мрамор",
-    nav: ["Начало", "Услуги", "Галерия", "Проекти", "Контакт"],
-    heroTitle: "Елегантността на естествения камък",
-    heroSubtitle: "Премиум мрамор, гранит и естествен камък за вашия дом и бизнес",
-    cta1: "Виж галерията",
-    cta2: "Свържете се с нас",
-    aboutTitle: "За нас",
-    aboutText: "С над 15 години опит, MAJSTOR-NASTE е водеща компания в обработката и монтажа на естествен камък. Създаваме уникални решения, които комбинират традиционния занаят с модерните технологии.",
-    servicesTitle: "Нашите услуги",
-    services: [
-      { title: "Кухненски плотове", desc: "Гранитни и кварцови плотове с висока издръжливост и елегантност", icon: "Counter" },
-      { title: "Каменни подове", desc: "Мраморни и гранитни подове за перфектен вид", icon: "Floor" },
-      { title: "Каменни фасади", desc: "Естествен камък за екстериор с дълготрайна красота", icon: "Wall" },
-      { title: "Бани и СПА", desc: "Луксозни каменни бани и зони за релаксация", icon: "Bath" },
-      { title: "Скулптури и декор", desc: "Артистични каменни скулптури и декоративни елементи", icon: "Sculpture" },
-      { title: "Реставрация", desc: "Възстановяване на стари мраморни и каменни повърхности", icon: "Restore" },
-    ],
-    galleryTitle: "Галерия",
-    uploadBtn: "Качи своя снимка",
-    projectsTitle: "Нашите проекти",
-    testimonialsTitle: "Какво казват нашите клиенти",
-    contactTitle: "Свържете се с нас",
-    contactSubtitle: "Готови сме да реализираме вашата мечта",
-    name: "Име и фамилия",
-    phone: "Телефон",
-    email: "Имейл",
-    message: "Съобщение",
-    send: "Изпрати",
-    footer: "© 2025 MAJSTOR-NASTE. Всички права запазени."
-  },
-  sq: {
-    title: "MAJSTOR-NASTE",
-    subtitle: "Gur natyror & Mermer",
-    nav: ["Kreu", "Shërbimet", "Galeria", "Projektet", "Kontakt"],
-    heroTitle: "Eleganca e gurit natyror",
-    heroSubtitle: "Mermer, granit dhe gur natyror premium për shtëpinë dhe biznesin tuaj",
-    cta1: "Shiko Galerinë",
-    cta2: "Na kontaktoni",
-    aboutTitle: "Rreth nesh",
-    aboutText: "Me mbi 15 vjet përvojë, MAJSTOR-NASTE është një kompani lider në përpunimin dhe instalimin e gurit natyror. Ne krijojmë zgjidhje unike që kombinojnë mjeshtërinë tradicionale me teknologjinë moderne.",
-    servicesTitle: "Shërbimet tona",
-    services: [
-      { title: "Pllaka kuzhine", desc: "Pllaka graniti dhe kuarci me qëndrueshmëri dhe elegancë të lartë", icon: "Counter" },
-      { title: "Dysheme guri", desc: "Dysheme mermeri dhe graniti për pamje perfekte", icon: "Floor" },
-      { title: "Fasada guri", desc: "Gur natyror për eksterier me bukuri të qëndrueshme", icon: "Wall" },
-      { title: "Banjo dhe SPA", desc: "Banjo luksoze prej guri dhe hapësira relaksi", icon: "Bath" },
-      { title: "Skulptura dhe Dekor", desc: "Skulptura artistike prej guri dhe elemente dekorative", icon: "Sculpture" },
-      { title: "Restaurim", desc: "Restaurim i sipërfaqeve të vjetra prej mermeri dhe guri", icon: "Restore" },
-    ],
-    galleryTitle: "Galeria",
-    uploadBtn: "Ngarko foton tuaj",
-    projectsTitle: "Projektet tona",
-    testimonialsTitle: "Çfarë thonë klientët tanë",
-    contactTitle: "Na kontaktoni",
-    contactSubtitle: "Jemi gati ta realizojmë ëndrrën tuaj",
-    name: "Emri i plotë",
-    phone: "Telefoni",
-    email: "Email",
-    message: "Mesazhi",
-    send: "Dërgo mesazhin",
-    footer: "© 2025 MAJSTOR-NASTE. Të gjitha të drejtat e rezervuara."
-  }
-};
+function readFiles(files: FileList): Promise<string[]> {
+  return Promise.all(
+    Array.from(files).map(f => new Promise<string>((res) => {
+      const r = new FileReader();
+      r.onload = () => res(r.result as string);
+      r.readAsDataURL(f);
+    }))
+  );
+}
 
-// Stone-specific images - all real stone, marble and granite works
-const stoneImages = [
-  "https://images.unsplash.com/photo-1556909211-36987daf7b4d?q=80&w=1200&auto=format&fit=crop", // Marble slab
-  "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?q=80&w=1200&auto=format&fit=crop", // Granite countertop
-  "https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?q=80&w=1200&auto=format&fit=crop", // Stone wall
-  "https://images.unsplash.com/photo-1600566753086-00f18fb6b3ea?q=80&w=1200&auto=format&fit=crop", // Marble bathroom
-];
+// ─── Language Selector ───
+function LangSwitcher({ lang, setLang }: { lang: Lang; setLang: (l: Lang) => void }) {
+  const langs: { code: Lang; label: string; flag: string }[] = [
+    { code: 'alb', label: 'ALB', flag: '🇦🇱' },
+    { code: 'mk', label: 'MK', flag: '🇲🇰' },
+    { code: 'eng', label: 'ENG', flag: '🇬🇧' },
+    { code: 'bg', label: 'BG', flag: '🇧🇬' },
+  ];
+  return (
+    <div className="flex gap-1">
+      {langs.map(l => (
+        <button
+          key={l.code}
+          onClick={() => setLang(l.code)}
+          className={`px-2 py-1 rounded text-xs font-bold transition-all ${
+            lang === l.code
+              ? 'bg-amber-500 text-white shadow-lg scale-110'
+              : 'bg-white/20 text-white hover:bg-white/30'
+          }`}
+        >
+          <span className="mr-1">{l.flag}</span>{l.label}
+        </button>
+      ))}
+    </div>
+  );
+}
 
-const defaultGalleryImages = [
-  "https://images.unsplash.com/photo-1600585154526-990dced4db0d?q=80&w=600&auto=format&fit=crop", // Marble kitchen island
-  "https://images.unsplash.com/photo-1600566752355-35792bedcfea?q=80&w=600&auto=format&fit=crop", // Stone bathroom
-  "https://images.unsplash.com/photo-1556909211-36987daf7b4d?q=80&w=600&auto=format&fit=crop", // White marble
-  "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?q=80&w=600&auto=format&fit=crop", // Granite counter
-  "https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?q=80&w=600&auto=format&fit=crop", // Stone cladding
-  "https://images.unsplash.com/photo-1618221195710-dd0b2e9bd9e8?q=80&w=600&auto=format&fit=crop", // Marble floor
-  "https://images.unsplash.com/photo-1600566753190-17f0baa2a6c3?q=80&w=600&auto=format&fit=crop", // Stone fireplace
-  "https://images.unsplash.com/photo-1600607688969-a5bfcd646154?q=80&w=600&auto=format&fit=crop", // Stone staircase
-];
+// ─── Slider ───
+function HeroSlider({ images, t }: { images: string[]; t: Record<string, string> }) {
+  const [current, setCurrent] = useState(0);
+  const timerRef = useRef<ReturnType<typeof setInterval>>(undefined);
 
-const testimonials = [
-  {
-    name: "Александар Јовановски",
-    text: "Одлична работа! Кухинскиот пулт од гранит изгледа фантастично. Професионалци!",
-    role: "Скопје",
-    rating: 5
-  },
-  {
-    name: "Elena Petrova",
-    text: "The marble bathroom they created is a masterpiece. Exceptional quality and service.",
-    role: "Sofia",
-    rating: 5
-  },
-  {
-    name: "Fatmir Hoxha",
-    text: "Shërbim shumë profesional. Fasada nga guri natyror doli shumë mirë.",
-    role: "Tiranë",
-    rating: 5
-  },
-];
+  const next = useCallback(() => {
+    if (images.length === 0) return;
+    setCurrent(p => (p + 1) % images.length);
+  }, [images.length]);
 
-export default function App() {
-  const [currentLang, setCurrentLang] = useState<'mk'|'en'|'bg'|'sq'>('mk');
-  const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const [currentSlide, setCurrentSlide] = useState(0);
-  
-  // Gallery state with localStorage
-  const [gallery, setGallery] = useState<string[]>(() => {
-    // Try to load saved images from localStorage
-    const savedGallery = localStorage.getItem('majstorNasteGallery');
-    if (savedGallery) {
-      try {
-        return JSON.parse(savedGallery);
-      } catch {
-        return defaultGalleryImages;
-      }
-    }
-    return defaultGalleryImages;
-  });
-  
-  const [selectedImage, setSelectedImage] = useState<string | null>(null);
-  const [showUpload, setShowUpload] = useState(false);
-  const [showClearConfirm, setShowClearConfirm] = useState(false);
-  const [formData, setFormData] = useState({
-    name: "",
-    phone: "",
-    email: "",
-    message: ""
-  });
-  const [isSubmitted, setIsSubmitted] = useState(false);
+  const prev = useCallback(() => {
+    if (images.length === 0) return;
+    setCurrent(p => (p - 1 + images.length) % images.length);
+  }, [images.length]);
 
-  const t = translations[currentLang];
-
-  // Auto slide for hero
   useEffect(() => {
-    const timer = setInterval(() => {
-      setCurrentSlide((prev) => (prev + 1) % stoneImages.length);
-    }, 4000);
-    return () => clearInterval(timer);
-  }, []);
+    if (images.length <= 1) return;
+    timerRef.current = setInterval(next, 4500);
+    return () => clearInterval(timerRef.current);
+  }, [images.length, next]);
 
-  const nextSlide = () => {
-    setCurrentSlide((prev) => (prev + 1) % stoneImages.length);
-  };
+  useEffect(() => {
+    if (current >= images.length) setCurrent(0);
+  }, [images.length, current]);
 
-  const prevSlide = () => {
-    setCurrentSlide((prev) => (prev - 1 + stoneImages.length) % stoneImages.length);
-  };
-
-  const handleUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const files = e.target.files;
-    if (!files) return;
-
-    Array.from(files).forEach(file => {
-      if (file.type.startsWith('image/')) {
-        const reader = new FileReader();
-        reader.onload = (event) => {
-          if (event.target?.result) {
-            setGallery(prev => {
-              const newGallery = [event.target!.result as string, ...prev];
-              // Save to localStorage
-              localStorage.setItem('majstorNasteGallery', JSON.stringify(newGallery));
-              return newGallery;
-            });
-          }
-        };
-        reader.readAsDataURL(file);
-      }
-    });
-    setShowUpload(false);
-  };
-
-  const clearGallery = () => {
-    localStorage.removeItem('majstorNasteGallery');
-    setGallery(defaultGalleryImages);
-    setShowClearConfirm(false);
-  };
-
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    setIsSubmitted(true);
-    setTimeout(() => {
-      setIsSubmitted(false);
-      setFormData({ name: "", phone: "", email: "", message: "" });
-    }, 2500);
-  };
-
-  const changeLanguage = (lang: 'mk'|'en'|'bg'|'sq') => {
-    setCurrentLang(lang);
-    setIsMenuOpen(false);
-  };
+  if (images.length === 0) {
+    return (
+      <section id="home" className="relative h-screen flex items-center justify-center bg-gradient-to-br from-gray-900 via-gray-800 to-gray-700">
+        <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAiIGhlaWdodD0iNjAiIHZpZXdCb3g9IjAgMCA2MCA2MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48ZyBmaWxsPSJub25lIiBmaWxsLXJ1bGU9ImV2ZW5vZGQiPjxnIGZpbGw9IiNmZmYiIGZpbGwtb3BhY2l0eT0iMC4wNSI+PHBhdGggZD0iTTM2IDE4YzMuMzE0IDAgNiAyLjY4NiA2IDZzLTIuNjg2IDYtNiA2LTYtMi42ODYtNi02IDIuNjg2LTYgNi02eiIvPjwvZz48L2c+PC9zdmc+')] opacity-30"></div>
+        <div className="text-center z-10 px-4">
+          <div className="inline-flex items-center justify-center w-24 h-24 bg-amber-500/20 rounded-full mb-6">
+            <svg className="w-12 h-12 text-amber-500" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-4 0a1 1 0 01-1-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 01-1 1h-2z" /></svg>
+          </div>
+          <h1 className="text-5xl md:text-7xl font-black text-white mb-4 tracking-tight">
+            {t.brand}
+          </h1>
+          <p className="text-xl md:text-2xl text-amber-400 font-semibold mb-3">{t.tagline}</p>
+          <p className="text-gray-400 text-lg mb-8">{t.heroSubtitle}</p>
+          <a href="#contact" className="inline-block bg-amber-500 hover:bg-amber-600 text-white font-bold py-4 px-10 rounded-full text-lg transition-all shadow-xl hover:shadow-amber-500/30 hover:scale-105">
+            {t.heroBtn}
+          </a>
+        </div>
+      </section>
+    );
+  }
 
   return (
-    <div className="min-h-screen bg-zinc-950 text-white overflow-x-hidden">
-      {/* NAVBAR */}
-      <nav className="fixed top-0 left-0 right-0 bg-zinc-950/90 backdrop-blur-lg z-50 border-b border-amber-900">
-        <div className="max-w-7xl mx-auto px-6 py-5 flex items-center justify-between">
-          <div className="flex items-center gap-3">
-            {/* Logo */}
-            <div className="flex items-center gap-2">
-              <div className="w-10 h-10 bg-gradient-to-br from-amber-400 to-amber-600 rounded-xl flex items-center justify-center text-zinc-950 font-bold text-2xl shadow-inner">
-                M
-              </div>
-              <div>
-                <div className="text-3xl font-bold tracking-tighter text-white">MAJSTOR-NASTE</div>
-                <div className="text-[10px] text-amber-400 -mt-1">NATURAL STONE</div>
-              </div>
-            </div>
-          </div>
-
-          {/* Desktop Nav */}
-          <div className="hidden md:flex items-center gap-10">
-            {t.nav.map((item, index) => (
-              <a 
-                key={index} 
-                href={`#${item.toLowerCase()}`}
-                className="hover:text-amber-400 transition-colors text-sm uppercase tracking-widest"
-              >
-                {item}
-              </a>
+    <section id="home" className="relative h-screen overflow-hidden">
+      {images.map((img, i) => (
+        <div
+          key={i}
+          className={`absolute inset-0 transition-opacity duration-1000 ${
+            i === current ? 'opacity-100' : 'opacity-0'
+          }`}
+        >
+          <img src={img} alt="" className="w-full h-full object-cover" />
+          <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-black/20" />
+        </div>
+      ))}
+      <div className="absolute inset-0 flex items-center justify-center z-10">
+        <div className="text-center px-4">
+          <h1 className="text-5xl md:text-7xl font-black text-white mb-4 tracking-tight drop-shadow-2xl">
+            {t.brand}
+          </h1>
+          <p className="text-xl md:text-2xl text-amber-400 font-semibold mb-3 drop-shadow-lg">{t.tagline}</p>
+          <p className="text-gray-200 text-lg mb-8 drop-shadow-lg max-w-2xl mx-auto">{t.heroSubtitle}</p>
+          <a href="#contact" className="inline-block bg-amber-500 hover:bg-amber-600 text-white font-bold py-4 px-10 rounded-full text-lg transition-all shadow-xl hover:shadow-amber-500/30 hover:scale-105">
+            {t.heroBtn}
+          </a>
+        </div>
+      </div>
+      {images.length > 1 && (
+        <>
+          <button onClick={prev} className="absolute left-4 top-1/2 -translate-y-1/2 z-20 bg-black/50 hover:bg-amber-500 text-white w-12 h-12 rounded-full flex items-center justify-center text-2xl transition-all">
+            {t.prev}
+          </button>
+          <button onClick={next} className="absolute right-4 top-1/2 -translate-y-1/2 z-20 bg-black/50 hover:bg-amber-500 text-white w-12 h-12 rounded-full flex items-center justify-center text-2xl transition-all">
+            {t.next}
+          </button>
+          <div className="absolute bottom-8 left-1/2 -translate-x-1/2 z-20 flex gap-2">
+            {images.map((_, i) => (
+              <button
+                key={i}
+                onClick={() => setCurrent(i)}
+                className={`w-3 h-3 rounded-full transition-all ${
+                  i === current ? 'bg-amber-500 scale-125' : 'bg-white/50 hover:bg-white/80'
+                }`}
+              />
             ))}
           </div>
+        </>
+      )}
+    </section>
+  );
+}
 
-          {/* Language selector */}
-          <div className="flex items-center gap-2">
-            <div className="flex bg-zinc-900 rounded-full p-1 border border-zinc-800">
-              {languages.map((lang) => (
-                <button
-                  key={lang.code}
-                  onClick={() => changeLanguage(lang.code as any)}
-                  className={`px-4 py-1.5 text-xs rounded-full transition-all flex items-center gap-1.5 ${
-                    currentLang === lang.code 
-                      ? 'bg-amber-500 text-zinc-950 font-medium' 
-                      : 'hover:bg-zinc-800'
-                  }`}
-                >
-                  <span>{lang.flag}</span>
-                  <span className="hidden sm:inline">{lang.name}</span>
-                </button>
-              ))}
+// ─── Upload Button ───
+function UploadButton({ label, onUpload }: { label: string; onUpload: (imgs: string[]) => void }) {
+  const inputRef = useRef<HTMLInputElement>(null);
+  const handleChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files && e.target.files.length > 0) {
+      const imgs = await readFiles(e.target.files);
+      onUpload(imgs);
+      e.target.value = '';
+    }
+  };
+  return (
+    <>
+      <input ref={inputRef} type="file" accept="image/*" multiple className="hidden" onChange={handleChange} />
+      <button
+        onClick={() => inputRef.current?.click()}
+        className="inline-flex items-center gap-2 bg-amber-500 hover:bg-amber-600 text-white font-bold py-3 px-6 rounded-full transition-all shadow-lg hover:shadow-amber-500/30 hover:scale-105"
+      >
+        <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" /></svg>
+        {label}
+      </button>
+    </>
+  );
+}
+
+// ─── Service Icons ───
+const serviceIcons = [
+  <svg className="w-10 h-10" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" /></svg>,
+  <svg className="w-10 h-10" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" /></svg>,
+  <svg className="w-10 h-10" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M13 10V3L4 14h7v7l9-11h-7z" /></svg>,
+  <svg className="w-10 h-10" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M7 21a4 4 0 01-4-4V5a2 2 0 012-2h4a2 2 0 012 2v12a4 4 0 01-4 4zm0 0h12a2 2 0 002-2v-4a2 2 0 00-2-2h-2.343M11 7.343l1.657-1.657a2 2 0 012.828 0l2.829 2.829a2 2 0 010 2.828l-8.486 8.485M7 17h.01" /></svg>,
+  <svg className="w-10 h-10" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M4 5a1 1 0 011-1h14a1 1 0 011 1v2a1 1 0 01-1 1H5a1 1 0 01-1-1V5zM4 13a1 1 0 011-1h6a1 1 0 011 1v6a1 1 0 01-1 1H5a1 1 0 01-1-1v-6zM16 13a1 1 0 011-1h2a1 1 0 011 1v6a1 1 0 01-1 1h-2a1 1 0 01-1-1v-6z" /></svg>,
+  <svg className="w-10 h-10" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-6l-2-2H5a2 2 0 00-2 2z" /></svg>,
+];
+
+// ─── Lightbox ───
+function Lightbox({ images, index, onClose, onPrev, onNext }: {
+  images: string[]; index: number; onClose: () => void; onPrev: () => void; onNext: () => void;
+}) {
+  useEffect(() => {
+    const handler = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') onClose();
+      if (e.key === 'ArrowLeft') onPrev();
+      if (e.key === 'ArrowRight') onNext();
+    };
+    window.addEventListener('keydown', handler);
+    return () => window.removeEventListener('keydown', handler);
+  }, [onClose, onPrev, onNext]);
+
+  return (
+    <div className="fixed inset-0 z-[100] bg-black/90 flex items-center justify-center" onClick={onClose}>
+      <button className="absolute top-6 right-6 text-white text-4xl hover:text-amber-400 transition-colors z-10" onClick={onClose}>✕</button>
+      {images.length > 1 && (
+        <>
+          <button className="absolute left-4 top-1/2 -translate-y-1/2 text-white text-4xl hover:text-amber-400 z-10" onClick={(e) => { e.stopPropagation(); onPrev(); }}>❮</button>
+          <button className="absolute right-4 top-1/2 -translate-y-1/2 text-white text-4xl hover:text-amber-400 z-10" onClick={(e) => { e.stopPropagation(); onNext(); }}>❯</button>
+        </>
+      )}
+      <img
+        src={images[index]}
+        alt=""
+        className="max-h-[90vh] max-w-[90vw] object-contain rounded-lg shadow-2xl"
+        onClick={(e) => e.stopPropagation()}
+      />
+      <div className="absolute bottom-6 text-white/60 text-sm">{index + 1} / {images.length}</div>
+    </div>
+  );
+}
+
+// ─── Main App ───
+export default function App() {
+  const [lang, setLang] = useState<Lang>(() => (localStorage.getItem('lang') as Lang) || 'mk');
+  const [mobileMenu, setMobileMenu] = useState(false);
+  const [scrolled, setScrolled] = useState(false);
+  const [lightbox, setLightbox] = useState<{ images: string[]; index: number } | null>(null);
+
+  const t = translations[lang];
+
+  const slider = useImages('majstor-slider');
+  const gallery = useImages('majstor-gallery');
+
+  useEffect(() => { localStorage.setItem('lang', lang); }, [lang]);
+
+  useEffect(() => {
+    const handler = () => setScrolled(window.scrollY > 50);
+    window.addEventListener('scroll', handler);
+    return () => window.removeEventListener('scroll', handler);
+  }, []);
+
+  const navLinks = [
+    { href: '#home', label: t.home },
+    { href: '#about', label: t.about },
+    { href: '#services', label: t.services },
+    { href: '#gallery', label: t.gallery },
+    { href: '#contact', label: t.contact },
+  ];
+
+  return (
+    <div className="font-sans antialiased">
+      {/* ── Navbar ── */}
+      <nav className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
+        scrolled ? 'bg-gray-900/95 backdrop-blur-md shadow-2xl py-2' : 'bg-transparent py-4'
+      }`}>
+        <div className="max-w-7xl mx-auto px-4 flex items-center justify-between">
+          <a href="#home" className="flex items-center gap-2">
+            <div className="w-10 h-10 bg-amber-500 rounded-lg flex items-center justify-center">
+              <svg className="w-6 h-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.066 2.573c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.573 1.066c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.066-2.573c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" /><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" /></svg>
             </div>
+            <span className="text-white font-black text-xl tracking-tight">{t.brand}</span>
+          </a>
 
-            <button 
-              onClick={() => setIsMenuOpen(!isMenuOpen)}
-              className="md:hidden w-11 h-11 flex items-center justify-center bg-zinc-900 rounded-xl border border-zinc-700"
-            >
-              {isMenuOpen ? <X size={22} /> : <Menu size={22} />}
-            </button>
+          {/* Desktop Nav */}
+          <div className="hidden md:flex items-center gap-6">
+            {navLinks.map(l => (
+              <a key={l.href} href={l.href} className="text-white/80 hover:text-amber-400 font-medium transition-colors text-sm uppercase tracking-wider">
+                {l.label}
+              </a>
+            ))}
+            <LangSwitcher lang={lang} setLang={setLang} />
           </div>
+
+          {/* Mobile toggle */}
+          <button className="md:hidden text-white" onClick={() => setMobileMenu(!mobileMenu)}>
+            <svg className="w-7 h-7" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              {mobileMenu
+                ? <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                : <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />}
+            </svg>
+          </button>
         </div>
 
         {/* Mobile Menu */}
-        {isMenuOpen && (
-          <div className="md:hidden bg-zinc-900 border-t border-zinc-800 py-6">
-            <div className="max-w-7xl mx-auto px-6 flex flex-col gap-6">
-              {t.nav.map((item, index) => (
-                <a 
-                  key={index} 
-                  href={`#${item.toLowerCase()}`}
-                  className="text-lg py-2 hover:text-amber-400"
-                  onClick={() => setIsMenuOpen(false)}
-                >
-                  {item}
+        {mobileMenu && (
+          <div className="md:hidden bg-gray-900/98 backdrop-blur-xl border-t border-white/10 mt-2">
+            <div className="px-4 py-4 flex flex-col gap-3">
+              {navLinks.map(l => (
+                <a key={l.href} href={l.href} onClick={() => setMobileMenu(false)} className="text-white/80 hover:text-amber-400 font-medium py-2 text-lg">
+                  {l.label}
                 </a>
               ))}
+              <div className="pt-2 border-t border-white/10">
+                <LangSwitcher lang={lang} setLang={setLang} />
+              </div>
             </div>
           </div>
         )}
       </nav>
 
-      {/* HERO SLIDER */}
-      <div id="home" className="relative h-screen pt-20">
-        {stoneImages.map((img, index) => (
-          <div 
-            key={index}
-            className={`absolute inset-0 transition-opacity duration-1000 ${index === currentSlide ? 'opacity-100' : 'opacity-0'}`}
-          >
-            <img 
-              src={img} 
-              alt="Stone work" 
-              className="object-cover w-full h-full"
-            />
-            <div className="absolute inset-0 bg-gradient-to-b from-black/40 via-black/70 to-black/90"></div>
-          </div>
-        ))}
+      {/* ── Hero Slider ── */}
+      <HeroSlider images={slider.images} t={t} />
 
-        {/* Content */}
-        <div className="absolute inset-0 flex items-center z-10">
-          <div className="max-w-5xl mx-auto px-6 text-center">
-            <div className="inline-flex items-center gap-3 bg-white/10 backdrop-blur-md px-6 py-2 rounded-3xl mb-8 border border-white/20">
-              <div className="w-3 h-3 bg-emerald-400 rounded-full animate-pulse"></div>
-              <span className="uppercase text-xs tracking-[3px] font-medium">EST. 2009</span>
-            </div>
-            
-            <h1 className="text-6xl md:text-7xl font-bold leading-none mb-6 tracking-tighter">
-              {t.heroTitle}
-            </h1>
-            <p className="max-w-lg mx-auto text-xl md:text-2xl text-white/80 mb-12">
-              {t.heroSubtitle}
-            </p>
-
-            <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <a 
-                href="#gallery" 
-                className="bg-white text-zinc-950 px-10 py-4 rounded-2xl font-semibold flex items-center justify-center gap-3 hover:bg-amber-300 transition-all group"
-              >
-                {t.cta1}
-                <ArrowRight className="group-hover:translate-x-1 transition" />
-              </a>
-              <a 
-                href="#contact" 
-                className="border border-white/60 hover:bg-white/10 px-10 py-4 rounded-2xl font-medium flex items-center justify-center gap-3 transition-all"
-              >
-                {t.cta2}
-              </a>
-            </div>
-          </div>
-        </div>
-
-        {/* Slider controls */}
-        <div className="absolute bottom-12 left-1/2 -translate-x-1/2 flex gap-3 z-20">
-          <button 
-            onClick={prevSlide}
-            className="w-12 h-12 bg-black/40 hover:bg-black/70 backdrop-blur rounded-2xl flex items-center justify-center border border-white/10 transition-all active:scale-95"
-          >
-            <ChevronLeft size={24} />
-          </button>
-          <button 
-            onClick={nextSlide}
-            className="w-12 h-12 bg-black/40 hover:bg-black/70 backdrop-blur rounded-2xl flex items-center justify-center border border-white/10 transition-all active:scale-95"
-          >
-            <ChevronRight size={24} />
-          </button>
-        </div>
-
-        {/* Slide indicators */}
-        <div className="absolute bottom-8 left-1/2 flex gap-3 z-20">
-          {stoneImages.map((_, idx) => (
-            <button 
-              key={idx}
-              onClick={() => setCurrentSlide(idx)}
-              className={`w-3 h-3 rounded-full transition-all ${idx === currentSlide ? 'bg-amber-400 scale-125' : 'bg-white/40'}`}
-            />
-          ))}
-        </div>
-      </div>
-
-      {/* ABOUT */}
-      <div id="about" className="py-24 bg-zinc-900">
-        <div className="max-w-6xl mx-auto px-6">
-          <div className="grid md:grid-cols-12 gap-16 items-center">
-            <div className="md:col-span-7">
-              <div className="text-amber-400 text-sm tracking-[2px] mb-4">TRASHËGIMI PREJ GURI</div>
-              <h2 className="text-5xl font-semibold leading-none tracking-tight mb-8">
-                {t.aboutTitle}
-              </h2>
-              <p className="text-xl text-white/70 leading-relaxed max-w-prose">
-                {t.aboutText}
-              </p>
-              
-              <div className="grid grid-cols-3 gap-8 mt-16">
-                <div>
-                  <div className="text-4xl font-mono text-amber-400">15+</div>
-                  <div className="text-sm text-white/60 mt-2">VITE PËRVOJË</div>
-                </div>
-                <div>
-                  <div className="text-4xl font-mono text-amber-400">380</div>
-                  <div className="text-sm text-white/60 mt-2">PROJEKTE TË PËRFUNDUARA</div>
-                </div>
-                <div>
-                  <div className="text-4xl font-mono text-amber-400">24</div>
-                  <div className="text-sm text-white/60 mt-2">VENDE TË EKSPORTUARA</div>
-                </div>
-              </div>
-            </div>
-            
-            <div className="md:col-span-5">
-              <div className="aspect-square bg-zinc-800 rounded-3xl overflow-hidden border border-amber-900">
-                <img 
-                  src="https://images.unsplash.com/photo-1600585154340-be6161a56a0c?q=80&w=800&auto=format&fit=crop" 
-                  alt="Stone workshop" 
-                  className="w-full h-full object-cover"
-                />
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      {/* SERVICES */}
-      <div id="services" className="py-24">
-        <div className="max-w-6xl mx-auto px-6">
+      {/* ── About ── */}
+      <section id="about" className="py-20 bg-white">
+        <div className="max-w-7xl mx-auto px-4">
           <div className="text-center mb-16">
-            <div className="text-amber-400 text-sm tracking-widest mb-3">CILËSI PREMIUM</div>
-            <h2 className="text-5xl font-semibold">{t.servicesTitle}</h2>
+            <h2 className="text-4xl md:text-5xl font-black text-gray-900 mb-4">{t.aboutTitle}</h2>
+            <div className="w-20 h-1.5 bg-amber-500 mx-auto rounded-full"></div>
           </div>
-
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {t.services.map((service, index) => (
-              <div key={index} className="group bg-zinc-900 border border-zinc-800 hover:border-amber-400/50 rounded-3xl p-8 transition-all hover:-translate-y-1">
-                <div className="h-16 w-16 bg-gradient-to-br from-amber-400 to-yellow-600 text-zinc-950 rounded-2xl flex items-center justify-center mb-8 text-3xl shadow-inner">
-                  {index + 1}
-                </div>
-                <h3 className="text-2xl font-semibold mb-4">{service.title}</h3>
-                <p className="text-white/70 leading-relaxed">{service.desc}</p>
-                
-                <div className="mt-8 pt-8 border-t border-white/10 text-xs flex items-center gap-2 text-amber-400">
-                  <span>MË MIRË SE DJE</span>
-                  <ArrowRight className="group-hover:translate-x-1 transition" />
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-      </div>
-
-      {/* GALLERY */}
-      <div id="gallery" className="bg-zinc-900 py-24">
-        <div className="max-w-7xl mx-auto px-6">
-          <div className="flex flex-wrap justify-between items-end gap-4 mb-12">
+          <div className="grid md:grid-cols-2 gap-12 items-center">
             <div>
-              <div className="uppercase text-xs tracking-widest text-amber-400 mb-2">KRIJIMTARIA JONË</div>
-              <h2 className="text-5xl font-semibold">{t.galleryTitle}</h2>
+              <p className="text-gray-600 text-lg leading-relaxed mb-6">{t.aboutText1}</p>
+              <p className="text-gray-600 text-lg leading-relaxed">{t.aboutText2}</p>
             </div>
-            
-            <div className="flex gap-3">
-              {gallery !== defaultGalleryImages && (
-                <button
-                  onClick={() => setShowClearConfirm(true)}
-                  className="flex items-center gap-2 border border-red-500/50 text-red-400 px-6 py-4 rounded-2xl font-medium hover:bg-red-500/10 transition-all text-sm"
-                >
-                  Pastro fotot e mia
-                </button>
-              )}
-              
-              <button 
-                onClick={() => setShowUpload(true)}
-                className="flex items-center gap-3 bg-white text-zinc-950 px-8 py-4 rounded-2xl font-medium hover:bg-amber-300 active:scale-[0.985] transition-all"
-              >
-                <Upload size={20} />
-                {t.uploadBtn}
-              </button>
-            </div>
-          </div>
-
-          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-            {gallery.map((img, index) => (
-              <div 
-                key={index}
-                onClick={() => setSelectedImage(img)}
-                className="aspect-square overflow-hidden rounded-3xl cursor-pointer relative group"
-              >
-                <img 
-                  src={img} 
-                  alt={`Stone work ${index}`} 
-                  className="w-full h-full object-cover transition-all group-hover:scale-110 duration-700"
-                />
-                <div className="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent opacity-0 group-hover:opacity-100 transition-all flex items-end p-6">
-                  <div className="text-xs text-white/80">Gur natyror • {2022 + (index % 3)}</div>
+            <div className="grid grid-cols-3 gap-4">
+              {[
+                { num: '15+', label: t.yearsExp },
+                { num: '500+', label: t.projectsDone },
+                { num: '400+', label: t.happyClients },
+              ].map((s, i) => (
+                <div key={i} className="bg-gray-50 rounded-2xl p-6 text-center hover:shadow-xl transition-shadow border border-gray-100">
+                  <div className="text-3xl md:text-4xl font-black text-amber-500 mb-2">{s.num}</div>
+                  <div className="text-gray-500 text-sm font-medium">{s.label}</div>
                 </div>
-              </div>
-            ))}
-          </div>
-          
-          {gallery !== defaultGalleryImages && (
-            <div className="mt-4 text-xs text-white/30 text-right">
-              * Fotot e ngarkuara ruhen në shfletues
+              ))}
             </div>
-          )}
+          </div>
         </div>
-      </div>
+      </section>
 
-      {/* PROJECTS / TESTIMONIALS */}
-      <div className="py-24">
-        <div className="max-w-6xl mx-auto px-6">
-          <h2 className="text-center text-5xl font-semibold mb-16">{t.testimonialsTitle}</h2>
-          
-          <div className="grid md:grid-cols-3 gap-8">
-            {testimonials.map((testimonial, index) => (
-              <div key={index} className="bg-zinc-900 p-8 rounded-3xl">
-                <div className="flex mb-8">
-                  {Array.from({ length: testimonial.rating }).map((_, i) => (
-                    <Star key={i} className="text-amber-400" size={22} fill="currentColor" />
-                  ))}
+      {/* ── Services ── */}
+      <section id="services" className="py-20 bg-gray-50">
+        <div className="max-w-7xl mx-auto px-4">
+          <div className="text-center mb-16">
+            <h2 className="text-4xl md:text-5xl font-black text-gray-900 mb-4">{t.servicesTitle}</h2>
+            <div className="w-20 h-1.5 bg-amber-500 mx-auto rounded-full"></div>
+          </div>
+          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {[
+              { title: t.service1, desc: t.service1Desc, icon: serviceIcons[0] },
+              { title: t.service2, desc: t.service2Desc, icon: serviceIcons[1] },
+              { title: t.service3, desc: t.service3Desc, icon: serviceIcons[2] },
+              { title: t.service4, desc: t.service4Desc, icon: serviceIcons[3] },
+              { title: t.service5, desc: t.service5Desc, icon: serviceIcons[4] },
+              { title: t.service6, desc: t.service6Desc, icon: serviceIcons[5] },
+            ].map((s, i) => (
+              <div key={i} className="bg-white rounded-2xl p-8 hover:shadow-2xl transition-all duration-300 border border-gray-100 group hover:-translate-y-1">
+                <div className="w-16 h-16 bg-amber-500/10 rounded-xl flex items-center justify-center text-amber-500 mb-5 group-hover:bg-amber-500 group-hover:text-white transition-all">
+                  {s.icon}
                 </div>
-                <p className="text-lg leading-relaxed text-white/80 mb-8">"{testimonial.text}"</p>
-                <div>
-                  <div className="font-medium">{testimonial.name}</div>
-                  <div className="text-xs text-white/50">{testimonial.role}</div>
-                </div>
+                <h3 className="text-xl font-bold text-gray-900 mb-3">{s.title}</h3>
+                <p className="text-gray-500 leading-relaxed">{s.desc}</p>
               </div>
             ))}
           </div>
         </div>
-      </div>
+      </section>
 
-      {/* CONTACT */}
-      <div id="contact" className="bg-zinc-950 py-24 border-t border-zinc-800">
-        <div className="max-w-5xl mx-auto px-6">
-          <div className="grid md:grid-cols-12 gap-16">
-            <div className="md:col-span-5">
-              <div className="sticky top-28">
-                <div className="text-amber-400 text-sm mb-6 tracking-widest">SHKUP • SOFIE • TIRANË</div>
-                <h2 className="text-6xl font-semibold leading-none tracking-tighter mb-8">
-                  {t.contactTitle}
-                </h2>
-                <p className="text-2xl text-white/70 mb-10">{t.contactSubtitle}</p>
-                
-                <div className="space-y-8">
-                  <div className="flex gap-5">
-                    <Phone className="text-amber-400 mt-1" />
-                    <div>
-                      <div className="text-white/70 text-sm">TELEFONI</div>
-                      <a href="tel:+38970123456" className="text-xl">+389 70 123 456</a>
-                    </div>
-                  </div>
-                  <div className="flex gap-5">
-                    <Mail className="text-amber-400 mt-1" />
-                    <div>
-                      <div className="text-white/70 text-sm">EMAIL</div>
-                      <a href="mailto:info@majstornaste.mk" className="text-xl">info@majstornaste.mk</a>
-                    </div>
-                  </div>
-                  <div className="flex gap-5">
-                    <MapPin className="text-amber-400 mt-1" />
-                    <div>
-                      <div className="text-white/70 text-sm">ADRESA</div>
-                      <div className="text-xl">Bulevardi Partizanski Odredi 43,<br />1000 Shkup, Maqedoni</div>
-                    </div>
-                  </div>
-                </div>
-              </div>
+      {/* ── Gallery ── */}
+      <section id="gallery" className="py-20 bg-white">
+        <div className="max-w-7xl mx-auto px-4">
+          <div className="text-center mb-16">
+            <h2 className="text-4xl md:text-5xl font-black text-gray-900 mb-4">{t.galleryTitle}</h2>
+            <div className="w-20 h-1.5 bg-amber-500 mx-auto rounded-full mb-4"></div>
+            <p className="text-gray-500 text-lg">{t.gallerySubtitle}</p>
+          </div>
+
+          {/* Slider images management */}
+          <div className="mb-16">
+            <div className="flex items-center justify-between mb-6">
+              <h3 className="text-2xl font-bold text-gray-800 flex items-center gap-2">
+                <svg className="w-6 h-6 text-amber-500" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" /></svg>
+                {t.sliderSection}
+              </h3>
+              <UploadButton label={t.uploadSlider} onUpload={slider.add} />
             </div>
-
-            {/* Contact Form */}
-            <div className="md:col-span-7">
-              {isSubmitted ? (
-                <div className="bg-emerald-900/30 border border-emerald-400 h-full rounded-3xl flex flex-col items-center justify-center py-20 text-center">
-                  <div className="w-20 h-20 rounded-2xl bg-emerald-400/10 flex items-center justify-center mx-auto mb-6">
-                    <Heart className="text-emerald-400" size={42} />
-                  </div>
-                  <div className="text-3xl font-medium mb-3">Faleminderit!</div>
-                  <div className="text-white/70 max-w-xs">Do t'ju kontaktojmë brenda 24 orëve.</div>
-                </div>
-              ) : (
-                <form onSubmit={handleSubmit} className="space-y-8">
-                  <div className="grid grid-cols-2 gap-6">
-                    <div>
-                      <label className="block text-xs uppercase tracking-widest mb-3 text-white/60">{t.name}</label>
-                      <input 
-                        type="text" 
-                        value={formData.name}
-                        onChange={(e) => setFormData({...formData, name: e.target.value})}
-                        className="w-full bg-zinc-900 border border-zinc-700 focus:border-amber-400 rounded-2xl px-6 py-6 outline-none text-lg"
-                        required 
-                      />
-                    </div>
-                    <div>
-                      <label className="block text-xs uppercase tracking-widest mb-3 text-white/60">{t.phone}</label>
-                      <input 
-                        type="tel" 
-                        value={formData.phone}
-                        onChange={(e) => setFormData({...formData, phone: e.target.value})}
-                        className="w-full bg-zinc-900 border border-zinc-700 focus:border-amber-400 rounded-2xl px-6 py-6 outline-none text-lg"
-                        required 
-                      />
+            {slider.images.length === 0 ? (
+              <div className="bg-gray-50 rounded-2xl p-12 text-center border-2 border-dashed border-gray-200">
+                <svg className="w-16 h-16 text-gray-300 mx-auto mb-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" /></svg>
+                <p className="text-gray-400 text-lg">{t.noSliderImages}</p>
+              </div>
+            ) : (
+              <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-3">
+                {slider.images.map((img, i) => (
+                  <div key={i} className="relative group rounded-xl overflow-hidden aspect-video bg-gray-100">
+                    <img src={img} alt="" className="w-full h-full object-cover" />
+                    <div className="absolute inset-0 bg-black/0 group-hover:bg-black/40 transition-all flex items-center justify-center">
+                      <button
+                        onClick={() => slider.remove(i)}
+                        className="opacity-0 group-hover:opacity-100 bg-red-500 hover:bg-red-600 text-white text-xs font-bold px-3 py-1.5 rounded-full transition-all"
+                      >
+                        {t.deleteImg}
+                      </button>
                     </div>
                   </div>
+                ))}
+              </div>
+            )}
+          </div>
 
-                  <div>
-                    <label className="block text-xs uppercase tracking-widest mb-3 text-white/60">{t.email}</label>
-                    <input 
-                      type="email" 
-                      value={formData.email}
-                      onChange={(e) => setFormData({...formData, email: e.target.value})}
-                      className="w-full bg-zinc-900 border border-zinc-700 focus:border-amber-400 rounded-2xl px-6 py-6 outline-none text-lg"
-                      required 
-                    />
-                  </div>
-
-                  <div>
-                    <label className="block text-xs uppercase tracking-widest mb-3 text-white/60">{t.message}</label>
-                    <textarea 
-                      value={formData.message}
-                      onChange={(e) => setFormData({...formData, message: e.target.value})}
-                      rows={6}
-                      className="w-full bg-zinc-900 border border-zinc-700 focus:border-amber-400 rounded-3xl px-6 py-6 outline-none text-lg resize-y"
-                      placeholder="Na tregoni për projektin tuaj..."
-                      required
-                    />
-                  </div>
-
-                  <button 
-                    type="submit"
-                    className="w-full bg-gradient-to-r from-amber-400 to-yellow-500 hover:brightness-110 text-zinc-950 py-6 rounded-2xl text-lg font-semibold transition-all active:scale-[0.985]"
+          {/* Gallery images */}
+          <div>
+            <div className="flex items-center justify-between mb-6">
+              <h3 className="text-2xl font-bold text-gray-800 flex items-center gap-2">
+                <svg className="w-6 h-6 text-amber-500" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" /></svg>
+                {t.gallerySection}
+              </h3>
+              <UploadButton label={t.uploadBtn} onUpload={gallery.add} />
+            </div>
+            {gallery.images.length === 0 ? (
+              <div className="bg-gray-50 rounded-2xl p-12 text-center border-2 border-dashed border-gray-200">
+                <svg className="w-16 h-16 text-gray-300 mx-auto mb-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" /></svg>
+                <p className="text-gray-400 text-lg">{t.noImages}</p>
+              </div>
+            ) : (
+              <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+                {gallery.images.map((img, i) => (
+                  <div
+                    key={i}
+                    className="relative group rounded-2xl overflow-hidden aspect-square bg-gray-100 cursor-pointer"
+                    onClick={() => setLightbox({ images: gallery.images, index: i })}
                   >
-                    {t.send}
-                  </button>
-                </form>
-              )}
+                    <img src={img} alt="" className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" />
+                    <div className="absolute inset-0 bg-black/0 group-hover:bg-black/30 transition-all flex items-center justify-center">
+                      <svg className="w-10 h-10 text-white opacity-0 group-hover:opacity-100 transition-opacity" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0zM10 7v3m0 0v3m0-3h3m-3 0H7" /></svg>
+                    </div>
+                    <button
+                      onClick={(e) => { e.stopPropagation(); gallery.remove(i); }}
+                      className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 bg-red-500 hover:bg-red-600 text-white w-8 h-8 rounded-full flex items-center justify-center text-sm transition-all shadow-lg"
+                    >
+                      ✕
+                    </button>
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+        </div>
+      </section>
+
+      {/* ── Contact ── */}
+      <section id="contact" className="py-20 bg-gray-900">
+        <div className="max-w-7xl mx-auto px-4">
+          <div className="text-center mb-16">
+            <h2 className="text-4xl md:text-5xl font-black text-white mb-4">{t.contactTitle}</h2>
+            <div className="w-20 h-1.5 bg-amber-500 mx-auto rounded-full"></div>
+          </div>
+          <div className="grid md:grid-cols-2 gap-12">
+            <form onSubmit={(e) => e.preventDefault()} className="space-y-5">
+              <input type="text" placeholder={t.contactName} className="w-full bg-white/10 border border-white/20 rounded-xl px-5 py-4 text-white placeholder-white/40 focus:outline-none focus:border-amber-500 focus:ring-2 focus:ring-amber-500/20 transition-all" />
+              <div className="grid grid-cols-2 gap-4">
+                <input type="email" placeholder={t.contactEmail} className="w-full bg-white/10 border border-white/20 rounded-xl px-5 py-4 text-white placeholder-white/40 focus:outline-none focus:border-amber-500 focus:ring-2 focus:ring-amber-500/20 transition-all" />
+                <input type="tel" placeholder={t.contactPhone} className="w-full bg-white/10 border border-white/20 rounded-xl px-5 py-4 text-white placeholder-white/40 focus:outline-none focus:border-amber-500 focus:ring-2 focus:ring-amber-500/20 transition-all" />
+              </div>
+              <textarea rows={5} placeholder={t.contactMessage} className="w-full bg-white/10 border border-white/20 rounded-xl px-5 py-4 text-white placeholder-white/40 focus:outline-none focus:border-amber-500 focus:ring-2 focus:ring-amber-500/20 transition-all resize-none" />
+              <button type="submit" className="w-full bg-amber-500 hover:bg-amber-600 text-white font-bold py-4 px-8 rounded-xl text-lg transition-all shadow-lg hover:shadow-amber-500/30 hover:scale-[1.02]">
+                {t.contactSend}
+              </button>
+            </form>
+            <div className="space-y-8">
+              <h3 className="text-2xl font-bold text-white mb-6">{t.contactInfo}</h3>
+              {[
+                { icon: <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" /><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" /></svg>, label: t.address, val: t.addressVal },
+                { icon: <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" /></svg>, label: t.phone, val: t.phoneVal },
+                { icon: <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" /></svg>, label: t.email, val: t.emailVal },
+                { icon: <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>, label: t.workHours, val: t.workHoursVal },
+              ].map((c, i) => (
+                <div key={i} className="flex items-start gap-4">
+                  <div className="w-12 h-12 bg-amber-500/20 rounded-xl flex items-center justify-center text-amber-500 shrink-0">
+                    {c.icon}
+                  </div>
+                  <div>
+                    <div className="text-white/50 text-sm font-medium mb-1">{c.label}</div>
+                    <div className="text-white text-lg">{c.val}</div>
+                  </div>
+                </div>
+              ))}
             </div>
           </div>
         </div>
-      </div>
+      </section>
 
-      {/* FOOTER */}
-      <footer className="bg-black py-20 border-t border-zinc-900">
-        <div className="max-w-7xl mx-auto px-6 text-center">
-          <div className="flex justify-center mb-8">
-            <div className="flex items-center gap-3 opacity-40">
-              <div className="w-8 h-8 bg-white rounded-2xl flex items-center justify-center text-xl">🪨</div>
-              <div className="text-4xl font-bold tracking-tighter">MAJSTOR-NASTE</div>
+      {/* ── Footer ── */}
+      <footer className="bg-gray-950 py-8">
+        <div className="max-w-7xl mx-auto px-4 flex flex-col md:flex-row items-center justify-between gap-4">
+          <div className="flex items-center gap-2">
+            <div className="w-8 h-8 bg-amber-500 rounded-lg flex items-center justify-center">
+              <svg className="w-5 h-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.066 2.573c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.573 1.066c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.066-2.573c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" /><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" /></svg>
             </div>
+            <span className="text-white font-bold">{t.brand}</span>
           </div>
-          
-          <div className="text-white/40 text-sm">
-            {t.footer}
-          </div>
-          <div className="text-[10px] text-white/30 mt-8">
-            MULTILINGUAL • MAQEDONI • BULLGARI • SHQIPËRI
-          </div>
+          <p className="text-white/40 text-sm">{t.footerText}</p>
         </div>
       </footer>
 
-      {/* IMAGE MODAL */}
-      {selectedImage && (
-        <div 
-          className="fixed inset-0 bg-black/95 z-[100] flex items-center justify-center p-4"
-          onClick={() => setSelectedImage(null)}
-        >
-          <div className="relative max-w-5xl max-h-[90vh] w-full" onClick={e => e.stopPropagation()}>
-            <img 
-              src={selectedImage} 
-              alt="Enlarged view" 
-              className="max-h-[85vh] mx-auto rounded-3xl shadow-2xl"
-            />
-            <button 
-              onClick={() => setSelectedImage(null)}
-              className="absolute -top-6 -right-6 bg-zinc-900 text-white w-12 h-12 rounded-full flex items-center justify-center border border-zinc-700 hover:bg-red-500/80 transition-colors"
-            >
-              ✕
-            </button>
-          </div>
-        </div>
-      )}
-
-      {/* UPLOAD MODAL */}
-      {showUpload && (
-        <div className="fixed inset-0 bg-black/90 z-[110] flex items-center justify-center">
-          <div className="bg-zinc-900 rounded-3xl max-w-md w-full mx-4 p-10">
-            <h3 className="text-3xl mb-2">Shto foto</h3>
-            <p className="text-white/60 mb-8">Ndani punën tuaj me gur natyror</p>
-            
-            <label className="border border-dashed border-amber-400 hover:border-amber-300 h-64 rounded-3xl flex flex-col items-center justify-center cursor-pointer transition-all">
-              <Upload size={52} className="text-amber-400 mb-6" />
-              <div className="text-center">
-                <div className="font-medium">Kliko për të ngarkuar</div>
-                <div className="text-xs text-white/50 mt-1">JPG, PNG, WEBP • max 10MB</div>
-              </div>
-              <input 
-                type="file" 
-                multiple 
-                accept="image/*" 
-                onChange={handleUpload}
-                className="hidden" 
-              />
-            </label>
-            
-            <button 
-              onClick={() => setShowUpload(false)}
-              className="mt-8 w-full py-4 text-sm tracking-widest border border-white/30 rounded-2xl"
-            >
-              ANULO
-            </button>
-          </div>
-        </div>
-      )}
-
-      {/* CLEAR GALLERY CONFIRM MODAL */}
-      {showClearConfirm && (
-        <div className="fixed inset-0 bg-black/90 z-[120] flex items-center justify-center">
-          <div className="bg-zinc-900 rounded-3xl max-w-md w-full mx-4 p-10">
-            <h3 className="text-3xl mb-2">Pastro fotot</h3>
-            <p className="text-white/60 mb-8">A jeni i sigurt që doni të pastroni të gjitha fotot e ngarkuara?</p>
-            
-            <div className="flex gap-4">
-              <button 
-                onClick={clearGallery}
-                className="flex-1 bg-red-600 hover:bg-red-700 text-white py-4 rounded-2xl font-medium transition-all"
-              >
-                PO, PASTRO
-              </button>
-              <button 
-                onClick={() => setShowClearConfirm(false)}
-                className="flex-1 border border-white/30 hover:bg-white/10 py-4 rounded-2xl font-medium transition-all"
-              >
-                ANULO
-              </button>
-            </div>
-          </div>
-        </div>
+      {/* ── Lightbox ── */}
+      {lightbox && (
+        <Lightbox
+          images={lightbox.images}
+          index={lightbox.index}
+          onClose={() => setLightbox(null)}
+          onPrev={() => setLightbox(prev => prev ? { ...prev, index: (prev.index - 1 + prev.images.length) % prev.images.length } : null)}
+          onNext={() => setLightbox(prev => prev ? { ...prev, index: (prev.index + 1) % prev.images.length } : null)}
+        />
       )}
     </div>
   );
