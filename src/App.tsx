@@ -44,6 +44,7 @@ function LangSwitcher({ lang, setLang }: { lang: Lang; setLang: (l: Lang) => voi
       {langs.map(l => (
         <button
           key={l.code}
+          type="button"
           onClick={() => setLang(l.code)}
           className={`px-2 py-1 rounded text-xs font-bold transition-all ${
             lang === l.code
@@ -131,16 +132,17 @@ function HeroSlider({ images, t }: { images: string[]; t: Record<string, string>
       </div>
       {images.length > 1 && (
         <>
-          <button onClick={prev} className="absolute left-4 top-1/2 -translate-y-1/2 z-20 bg-black/50 hover:bg-amber-500 text-white w-12 h-12 rounded-full flex items-center justify-center text-2xl transition-all">
+          <button type="button" onClick={prev} className="absolute left-4 top-1/2 -translate-y-1/2 z-20 bg-black/50 hover:bg-amber-500 text-white w-12 h-12 rounded-full flex items-center justify-center text-2xl transition-all">
             {t.prev}
           </button>
-          <button onClick={next} className="absolute right-4 top-1/2 -translate-y-1/2 z-20 bg-black/50 hover:bg-amber-500 text-white w-12 h-12 rounded-full flex items-center justify-center text-2xl transition-all">
+          <button type="button" onClick={next} className="absolute right-4 top-1/2 -translate-y-1/2 z-20 bg-black/50 hover:bg-amber-500 text-white w-12 h-12 rounded-full flex items-center justify-center text-2xl transition-all">
             {t.next}
           </button>
           <div className="absolute bottom-8 left-1/2 -translate-x-1/2 z-20 flex gap-2">
             {images.map((_, i) => (
               <button
                 key={i}
+                type="button"
                 onClick={() => setCurrent(i)}
                 className={`w-3 h-3 rounded-full transition-all ${
                   i === current ? 'bg-amber-500 scale-125' : 'bg-white/50 hover:bg-white/80'
@@ -168,6 +170,7 @@ function UploadButton({ label, onUpload }: { label: string; onUpload: (imgs: str
     <>
       <input ref={inputRef} type="file" accept="image/*" multiple className="hidden" onChange={handleChange} />
       <button
+        type="button"  // KY ËSHTË NDRYSHIMI KRYESOR QË PARANDALON REFRESH-IN
         onClick={() => inputRef.current?.click()}
         className="inline-flex items-center gap-2 bg-amber-500 hover:bg-amber-600 text-white font-bold py-3 px-6 rounded-full transition-all shadow-lg hover:shadow-amber-500/30 hover:scale-105"
       >
@@ -204,11 +207,11 @@ function Lightbox({ images, index, onClose, onPrev, onNext }: {
 
   return (
     <div className="fixed inset-0 z-[100] bg-black/90 flex items-center justify-center" onClick={onClose}>
-      <button className="absolute top-6 right-6 text-white text-4xl hover:text-amber-400 transition-colors z-10" onClick={onClose}>✕</button>
+      <button type="button" className="absolute top-6 right-6 text-white text-4xl hover:text-amber-400 transition-colors z-10" onClick={onClose}>✕</button>
       {images.length > 1 && (
         <>
-          <button className="absolute left-4 top-1/2 -translate-y-1/2 text-white text-4xl hover:text-amber-400 z-10" onClick={(e) => { e.stopPropagation(); onPrev(); }}>❮</button>
-          <button className="absolute right-4 top-1/2 -translate-y-1/2 text-white text-4xl hover:text-amber-400 z-10" onClick={(e) => { e.stopPropagation(); onNext(); }}>❯</button>
+          <button type="button" className="absolute left-4 top-1/2 -translate-y-1/2 text-white text-4xl hover:text-amber-400 z-10" onClick={(e) => { e.stopPropagation(); onPrev(); }}>❮</button>
+          <button type="button" className="absolute right-4 top-1/2 -translate-y-1/2 text-white text-4xl hover:text-amber-400 z-10" onClick={(e) => { e.stopPropagation(); onNext(); }}>❯</button>
         </>
       )}
       <img
@@ -275,7 +278,7 @@ export default function App() {
           </div>
 
           {/* Mobile toggle */}
-          <button className="md:hidden text-white" onClick={() => setMobileMenu(!mobileMenu)}>
+          <button type="button" className="md:hidden text-white" onClick={() => setMobileMenu(!mobileMenu)}>
             <svg className="w-7 h-7" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               {mobileMenu
                 ? <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
@@ -390,6 +393,7 @@ export default function App() {
                     <img src={img} alt="" className="w-full h-full object-cover" />
                     <div className="absolute inset-0 bg-black/0 group-hover:bg-black/40 transition-all flex items-center justify-center">
                       <button
+                        type="button"
                         onClick={() => slider.remove(i)}
                         className="opacity-0 group-hover:opacity-100 bg-red-500 hover:bg-red-600 text-white text-xs font-bold px-3 py-1.5 rounded-full transition-all"
                       >
@@ -429,6 +433,7 @@ export default function App() {
                       <svg className="w-10 h-10 text-white opacity-0 group-hover:opacity-100 transition-opacity" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0zM10 7v3m0 0v3m0-3h3m-3 0H7" /></svg>
                     </div>
                     <button
+                      type="button"
                       onClick={(e) => { e.stopPropagation(); gallery.remove(i); }}
                       className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 bg-red-500 hover:bg-red-600 text-white w-8 h-8 rounded-full flex items-center justify-center text-sm transition-all shadow-lg"
                     >
