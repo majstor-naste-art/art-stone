@@ -156,7 +156,7 @@ const stoneImages = [
   "https://images.unsplash.com/photo-1600566753086-00f18fb6b3ea?q=80&w=1200&auto=format&fit=crop", // Marble bathroom
 ];
 
-const galleryImages = [
+const defaultGalleryImages = [
   "https://images.unsplash.com/photo-1600585154526-990dced4db0d?q=80&w=600&auto=format&fit=crop", // Marble kitchen island
   "https://images.unsplash.com/photo-1600566752355-35792bedcfea?q=80&w=600&auto=format&fit=crop", // Stone bathroom
   "https://images.unsplash.com/photo-1556909211-36987daf7b4d?q=80&w=600&auto=format&fit=crop", // White marble
@@ -192,9 +192,24 @@ export default function App() {
   const [currentLang, setCurrentLang] = useState<'mk'|'en'|'bg'|'sq'>('mk');
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [currentSlide, setCurrentSlide] = useState(0);
-  const [gallery, setGallery] = useState(galleryImages);
+  
+  // Gallery state with localStorage
+  const [gallery, setGallery] = useState<string[]>(() => {
+    // Try to load saved images from localStorage
+    const savedGallery = localStorage.getItem('majstorNasteGallery');
+    if (savedGallery) {
+      try {
+        return JSON.parse(savedGallery);
+      } catch {
+        return defaultGalleryImages;
+      }
+    }
+    return defaultGalleryImages;
+  });
+  
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
   const [showUpload, setShowUpload] = useState(false);
+  const [showClearConfirm, setShowClearConfirm] = useState(false);
   const [formData, setFormData] = useState({
     name: "",
     phone: "",
@@ -230,13 +245,24 @@ export default function App() {
         const reader = new FileReader();
         reader.onload = (event) => {
           if (event.target?.result) {
-            setGallery(prev => [event.target!.result as string, ...prev]);
+            setGallery(prev => {
+              const newGallery = [event.target!.result as string, ...prev];
+              // Save to localStorage
+              localStorage.setItem('majstorNasteGallery', JSON.stringify(newGallery));
+              return newGallery;
+            });
           }
         };
         reader.readAsDataURL(file);
       }
     });
     setShowUpload(false);
+  };
+
+  const clearGallery = () => {
+    localStorage.removeItem('majstorNasteGallery');
+    setGallery(defaultGalleryImages);
+    setShowClearConfirm(false);
   };
 
   const handleSubmit = (e: React.FormEvent) => {
@@ -480,19 +506,30 @@ export default function App() {
       {/* GALLERY */}
       <div id="gallery" className="bg-zinc-900 py-24">
         <div className="max-w-7xl mx-auto px-6">
-          <div className="flex justify-between items-end mb-12">
+          <div className="flex flex-wrap justify-between items-end gap-4 mb-12">
             <div>
               <div className="uppercase text-xs tracking-widest text-amber-400 mb-2">KRIJIMTARIA JONË</div>
               <h2 className="text-5xl font-semibold">{t.galleryTitle}</h2>
             </div>
             
-            <button 
-              onClick={() => setShowUpload(true)}
-              className="flex items-center gap-3 bg-white text-zinc-950 px-8 py-4 rounded-2xl font-medium hover:bg-amber-300 active:scale-[0.985] transition-all"
-            >
-              <Upload size={20} />
-              {t.uploadBtn}
-            </button>
+            <div className="flex gap-3">
+              {gallery !== defaultGalleryImages && (
+                <button
+                  onClick={() => setShowClearConfirm(true)}
+                  className="flex items-center gap-2 border border-red-500/50 text-red-400 px-6 py-4 rounded-2xl font-medium hover:bg-red-500/10 transition-all text-sm"
+                >
+                  Pastro fotot e mia
+                </button>
+              )}
+              
+              <button 
+                onClick={() => setShowUpload(true)}
+                className="flex items-center gap-3 bg-white text-zinc-950 px-8 py-4 rounded-2xl font-medium hover:bg-amber-300 active:scale-[0.985] transition-all"
+              >
+                <Upload size={20} />
+                {t.uploadBtn}
+              </button>
+            </div>
           </div>
 
           <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
@@ -513,6 +550,12 @@ export default function App() {
               </div>
             ))}
           </div>
+          
+          {gallery !== defaultGalleryImages && (
+            <div className="mt-4 text-xs text-white/30 text-right">
+              * Fotot e ngarkuara ruhen në shfletues
+            </div>
+          )}
         </div>
       </div>
 
@@ -564,7 +607,7 @@ export default function App() {
                     <Mail className="text-amber-400 mt-1" />
                     <div>
                       <div className="text-white/70 text-sm">EMAIL</div>
-                      <a href="mailto:info@kamen.mk" className="text-xl">info@majstornaste.mk</a>
+                      <a href="mailto:info@majstornaste.mk" className="text-xl">info@majstornaste.mk</a>
                     </div>
                   </div>
                   <div className="flex gap-5">
@@ -718,6 +761,31 @@ export default function App() {
             >
               ANULO
             </button>
+          </div>
+        </div>
+      )}
+
+      {/* CLEAR GALLERY CONFIRM MODAL */}
+      {showClearConfirm && (
+        <div className="fixed inset-0 bg-black/90 z-[120] flex items-center justify-center">
+          <div className="bg-zinc-900 rounded-3xl max-w-md w-full mx-4 p-10">
+            <h3 className="text-3xl mb-2">Pastro fotot</h3>
+            <p className="text-white/60 mb-8">A jeni i sigurt që doni të pastroni të gjitha fotot e ngarkuara?</p>
+            
+            <div className="flex gap-4">
+              <button 
+                onClick={clearGallery}
+                className="flex-1 bg-red-600 hover:bg-red-700 text-white py-4 rounded-2xl font-medium transition-all"
+              >
+                PO, PASTRO
+              </button>
+              <button 
+                onClick={() => setShowClearConfirm(false)}
+                className="flex-1 border border-white/30 hover:bg-white/10 py-4 rounded-2xl font-medium transition-all"
+              >
+                ANULO
+              </button>
+            </div>
           </div>
         </div>
       )}
