@@ -54,7 +54,7 @@ function saveImages(key: string, imgs: string[]) {
     // Nëse madhësia kalon 4.5 MB (lëmë pak hapësirë rezervë)
     if (sizeInMB > 4.5) {
       console.warn(`Storage size warning: ${sizeInMB.toFixed(2)}MB exceeds recommended limit`);
-      // Megjithatë, provoje të ruash - mund të funksionojë ende
+      // Megjithatë, provoje ta ruash - mund të funksionojë ende
     }
     
     localStorage.setItem(key, JSON.stringify(imgs));
@@ -350,6 +350,7 @@ export default function App() {
   const [mobileMenu, setMobileMenu] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const [lightbox, setLightbox] = useState<{ images: string[]; index: number } | null>(null);
+  const [formStatus, setFormStatus] = useState<'idle' | 'sending' | 'success' | 'error'>('idle');
 
   const t = translations[lang];
 
@@ -371,6 +372,49 @@ export default function App() {
     { href: '#gallery', label: t.gallery },
     { href: '#contact', label: t.contact },
   ];
+
+  // Funksioni për dërgimin e formës
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    setFormStatus('sending');
+    
+    const form = e.currentTarget;
+    const formData = new FormData(form);
+    
+    // Shto të dhënat në një objekt
+    const data = {
+      name: formData.get('name'),
+      email: formData.get('email'),
+      phone: formData.get('phone'),
+      message: formData.get('message'),
+    };
+
+    try {
+      // Dërgo të dhënat duke përdorur fetch
+      const response = await fetch('https://formspree.io/f/mkgjzpow', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json'
+        },
+        body: JSON.stringify(data)
+      });
+
+      if (response.ok) {
+        setFormStatus('success');
+        form.reset();
+        // Fshije mesazhin e suksesit pas 5 sekondash
+        setTimeout(() => setFormStatus('idle'), 5000);
+      } else {
+        setFormStatus('error');
+        setTimeout(() => setFormStatus('idle'), 5000);
+      }
+    } catch (error) {
+      console.error('Error sending form:', error);
+      setFormStatus('error');
+      setTimeout(() => setFormStatus('idle'), 5000);
+    }
+  };
 
   return (
     <div className="font-sans antialiased">
@@ -574,15 +618,68 @@ export default function App() {
             <div className="w-20 h-1.5 bg-amber-500 mx-auto rounded-full"></div>
           </div>
           <div className="grid md:grid-cols-2 gap-12">
-            <form onSubmit={(e) => e.preventDefault()} className="space-y-5">
-              <input type="text" placeholder={t.contactName} className="w-full bg-white/10 border border-white/20 rounded-xl px-5 py-4 text-white placeholder-white/40 focus:outline-none focus:border-amber-500 focus:ring-2 focus:ring-amber-500/20 transition-all" />
+            <form onSubmit={handleSubmit} className="space-y-5">
+              <input 
+                type="text" 
+                name="name" 
+                placeholder={t.contactName} 
+                className="w-full bg-white/10 border border-white/20 rounded-xl px-5 py-4 text-white placeholder-white/40 focus:outline-none focus:border-amber-500 focus:ring-2 focus:ring-amber-500/20 transition-all" 
+                required 
+                disabled={formStatus === 'sending'}
+              />
               <div className="grid grid-cols-2 gap-4">
-                <input type="email" placeholder={t.contactEmail} className="w-full bg-white/10 border border-white/20 rounded-xl px-5 py-4 text-white placeholder-white/40 focus:outline-none focus:border-amber-500 focus:ring-2 focus:ring-amber-500/20 transition-all" />
-                <input type="tel" placeholder={t.contactPhone} className="w-full bg-white/10 border border-white/20 rounded-xl px-5 py-4 text-white placeholder-white/40 focus:outline-none focus:border-amber-500 focus:ring-2 focus:ring-amber-500/20 transition-all" />
+                <input 
+                  type="email" 
+                  name="email" 
+                  placeholder={t.contactEmail} 
+                  className="w-full bg-white/10 border border-white/20 rounded-xl px-5 py-4 text-white placeholder-white/40 focus:outline-none focus:border-amber-500 focus:ring-2 focus:ring-amber-500/20 transition-all" 
+                  required 
+                  disabled={formStatus === 'sending'}
+                />
+                <input 
+                  type="tel" 
+                  name="phone" 
+                  placeholder={t.contactPhone} 
+                  className="w-full bg-white/10 border border-white/20 rounded-xl px-5 py-4 text-white placeholder-white/40 focus:outline-none focus:border-amber-500 focus:ring-2 focus:ring-amber-500/20 transition-all" 
+                  disabled={formStatus === 'sending'}
+                />
               </div>
-              <textarea rows={5} placeholder={t.contactMessage} className="w-full bg-white/10 border border-white/20 rounded-xl px-5 py-4 text-white placeholder-white/40 focus:outline-none focus:border-amber-500 focus:ring-2 focus:ring-amber-500/20 transition-all resize-none" />
-              <button type="submit" className="w-full bg-amber-500 hover:bg-amber-600 text-white font-bold py-4 px-8 rounded-xl text-lg transition-all shadow-lg hover:shadow-amber-500/30 hover:scale-[1.02]">
-                {t.contactSend}
+              <textarea 
+                name="message" 
+                rows={5} 
+                placeholder={t.contactMessage} 
+                className="w-full bg-white/10 border border-white/20 rounded-xl px-5 py-4 text-white placeholder-white/40 focus:outline-none focus:border-amber-500 focus:ring-2 focus:ring-amber-500/20 transition-all resize-none" 
+                required 
+                disabled={formStatus === 'sending'}
+              />
+              
+              {/* Status messages */}
+              {formStatus === 'success' && (
+                <div className="bg-green-500/20 border border-green-500 text-green-400 px-4 py-3 rounded-xl text-center">
+                  Mesazhi u dërgua me sukses! Ju faleminderit.
+                </div>
+              )}
+              
+              {formStatus === 'error' && (
+                <div className="bg-red-500/20 border border-red-500 text-red-400 px-4 py-3 rounded-xl text-center">
+                  Ndodhi një gabim. Ju lutemi provoni përsëri.
+                </div>
+              )}
+              
+              <button 
+                type="submit" 
+                disabled={formStatus === 'sending'}
+                className="w-full bg-amber-500 hover:bg-amber-600 text-white font-bold py-4 px-8 rounded-xl text-lg transition-all shadow-lg hover:shadow-amber-500/30 hover:scale-[1.02] disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100 flex items-center justify-center gap-2"
+              >
+                {formStatus === 'sending' ? (
+                  <>
+                    <svg className="animate-spin h-5 w-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                      <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                      <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                    </svg>
+                    Duke dërguar...
+                  </>
+                ) : t.contactSend}
               </button>
             </form>
             <div className="space-y-8">
