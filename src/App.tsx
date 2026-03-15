@@ -391,7 +391,7 @@ export default function App() {
 
     try {
       // Dërgo të dhënat duke përdorur fetch
-      const response = await fetch('https://art-stone-three.vercel.app', {
+      const response = await fetch('https://formspree.io/f/xdawlgzb', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
